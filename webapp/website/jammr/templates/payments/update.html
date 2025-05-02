@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block title %}Update payment details | jammr{% endblock %}
+
+{% block content %}
+<section class="page_title">
+    <h1>Redirecting to Stripe</h1>
+    <h2>Please wait...</h2>
+</section><!-- /.page_title -->
+<script src="https://js.stripe.com/v3"></script>
+<script type="text/javascript">
+    var stripe = Stripe('{{ stripe_pub_key }}');
+    stripe.redirectToCheckout({
+        sessionId: "{{ checkout_session_id }}"
+    });
+</script>
+{% endblock content %}

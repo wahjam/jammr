@@ -1,0 +1,137 @@
+User
+ bool subscriber
+
+Jam
+ String address ("host:ip")
+ User owner
+ ACL acl
+
+Recording
+
+ACL
+ String mode ("allow"|"deny")
+ set(User) users
+
+Website
+-------
+Signup creates a User.
+
+Subscribing makes a User a subscriber.
+
+Unsubscribing or failing to pay makes the user no longer a subscriber.
+
+Close account deactivates a User so logging in is no longer possible.
+
+Jamming platform
+----------------
+There must always be 2 empty public jam sessions.
+
+Starting a private jam creates a new jam session with the user as the only ACL
+entry.
+
+The jam session owner can add other subscribers to the ACL.
+
+The jam session owner can remove users from the ACL.
+
+Users may join jam sessions if they are in the ACL.
+
+Private jam sessions terminate when all users have left.
+
+Client
+------
+List all jam sessions where user is in ACL.
+
+wahjamsrv configuration
+-----------------------
+Port
+StatusUserPass
+MaxUsers
+LogFile
+SessionArchive
+SetUID (need chroot or setgroups())
+DefaultTopic
+MaxChannels
+ServerLicense
+SetVotingThreshold
+
+jam info
+--------
+(TTL 1m)
+{
+    'server': 'host:port',
+    'users': ['bob', 'joe'],
+    'topic': 'Hello world!',
+    'bpm': 120,
+    'bpi': 16,
+    'is_public': true,
+    'numusers': 2,
+    'maxusers': 6,
+}
+
+acl
+---
+{
+    'owner': 'bob',
+    'mode': 'allow' | 'block',
+    'usernames': ['joe', 'mike'],
+}
+
+create jam
+----------
+{
+    'topic': "Bob's jam",
+    'response_id': '1234abcd1234abcd',
+    'acl': "...acl json...",
+}
+-> create_jam_responses/1234abcd1234abcd
+{
+    'server': 'host:port',
+}
+
+REST API
+--------
+/tokens/<username>/
+POST Store secret token (called by client)
+    The token acts as the shared secret between client and server.  Both can
+    only access it if they can authenticate to the REST API successfully.
+GET Fetch secret token (called by wahjamsrv)
+    Query arguments:
+        server=<ip>:<port> (optional)
+        Check if user owns the jam and add admin privileges if so
+    Return: Secret token and privileges
+
+/livejams/
+POST Create jam given license text and ACL
+     (only available to subscribers)
+     Return: address of server
+GET List jam info filtered by ACLs for this user
+
+/recorded-jams/
+POST Create recorded jam
+     (called by archive-jam.py)
+
+     {
+         "startDate": "2013-07-16T05:28Z", // ISO-8601
+         "owner": "stefanha", // optional, private jam
+         "users": ["stefanha", "lennard", "andhai"],
+         "mixUrl": "http://test.jammr.net/mix.m4a",
+         "tracksUrl": "http://test.jammr.net/secret/tracks.zip"
+     }
+
+     Return: HTTP 201, Location header points to new jam
+
+/usernames/
+GET Fetch usernames that start with a string
+    Query arguments:
+        q=<search-string>
+    Return: {
+        'usernames': ['a', 'b', 'c', ...],
+        'has_more': true|false,
+    }
+    has_more is true when results have been omitted because there are too many.
+
+/can-access-recorded-jams/
+GET Can at least one user access recorded jams?
+    Query arguments:
+        u=<username> (can be given multiple times)
+    Return: "true" or "false"

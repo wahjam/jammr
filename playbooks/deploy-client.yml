@@ -1,0 +1,34 @@
+---
+- name: publish a new release of the client
+  hosts: web
+  remote_user: root
+  vars:
+    # docker-py is installed in virtualenv
+    ansible_python_interpreter: /opt/ansible_env/bin/python
+  tasks:
+    - name: copy files to server
+      synchronize:
+        src: '{{ path_to_client }}/'
+        dest: '/opt/volumes/website/custom-static/{{ client_version }}'
+    - name: copy files to download directory
+      copy:
+        src: '/opt/volumes/website/custom-static/{{ client_version }}/'
+        dest: '/opt/volumes/website/custom-static'
+        remote_src: yes
+    - name: write update checker files
+      copy:
+        dest: /opt/volumes/website/custom-static/latest-{{ item }}.txt
+        content: "{{ client_version }}\n"
+      loop:
+        - mac
+        - windows
+        - linux
+    - name: collect static files
+      command: docker exec website ./manage-website.py collectstatic --no-input
+  vars_prompt:
+    - name: 'client_version'
+      prompt: 'Client version (x.y.z)'
+      private: no
+    - name: 'path_to_client'
+      prompt: 'Absolute path to client directory'
+      private: no

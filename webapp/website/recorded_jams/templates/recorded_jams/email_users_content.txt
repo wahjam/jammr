@@ -1,0 +1,20 @@
+{% extends "emails/base.txt" %}
+{% block body %}
+Your jam session from {{ jam.start_date|date:"D M j, H:i e" }} is now available for listening at:
+
+  https://jammr.net{{ jam.get_absolute_url }}
+
+Or download the jam to your computer, tablet, or phone from this link:
+
+  {{ jam.mix_url }}
+
+{% if perms.recorded_jams.can_download_tracks %}
+Individual tracks for this jam session are available from this link:
+
+  {{ jam.tracks_url }}
+{% endif %}
+{% endblock %}
+{% block footer %}
+If you do not wish to receive these emails please disable notifications at
+https://jammr.net/profiles/edit/
+{% endblock %}

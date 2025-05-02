@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block title %}You have subscribed! | jammr{% endblock %}
+
+{% block content %}
+<section class="page_title">
+    <h1>You have subscribed!</h1>
+    <h2>Congratulations, you now have jammr Premium.</h2>
+</section><!-- /.page_title -->
+
+<section class="full_width">
+    <p>Thank you for subscribing.  You can now use all features!</p>
+
+    <div class="message-box green">
+        <h3>Private jams</h3>
+
+        <p>To create a private jam, click "New jam" in the "Connect to
+        server..." dialog.  You can control who is allowed to join your private
+        jam session by going to the Admin | Access Control menu item.  The
+        friends you have allowed into your jam will see the jam session when
+        they open the "Connect to server..." dialog.</p>
+    </div>
+
+    <div class="message-box green">
+        <h3>Recorded jams</h3>
+
+        <p>You will receive notification emails about an hour after you finish
+        a jam so you can listen to your recorded jam sessions.  The
+        emails can be disabled on the <a href="{% url 'profiles_edit_profile' %}">Edit Profile</a> page.</p>
+    </div>
+
+    <p>Return to your profile page <a href="{% url 'profiles_edit_profile' %}">here</a>.</p>
+</section>
+{% endblock content %}

@@ -1,0 +1,22 @@
+Let's Encrypt certbot image
+---------------------------
+This image generates and renews SSL certificates for one or more domain names.
+It requires access to a "webroot" volume that is exposed by an HTTP server.
+This volume is used to prove ownership of domains in the Let's Encrypt ACME
+protocol.  After certificates are updated the nginx web server is reloaded in
+another container.
+
+Run the image with the following environment variables:
+
+ * NGINX_CONTAINER_NAME: name of nginx container (used to restart nginx after
+   generating/renewing SSL certificates)
+ * EMAIL: contact email address for Let's Encrypt account
+ * DOMAINS: comma-separated list of domain names for SSL certificate
+
+The following volumes are used:
+
+ * /etc/letsencrypt: certbot state and SSL certificate files
+ * /var/www/certbot-webroot: webroot for ACME protocol
+
+This image also requires that the /var/run/docker.sock socket is bind mounted
+in order to reload the nginx web server in the nginx container.

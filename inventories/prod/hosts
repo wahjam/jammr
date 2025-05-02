@@ -1,0 +1,18 @@
+[node1]
+116.203.140.241 external_hostname=node1.jammr.net
+
+[node3]
+116.203.156.28 external_hostname=node3.jammr.net recorded_jams_max_processes=4 jamd_max_jams=64
+
+[docker:children]
+node1
+node3
+
+[web:children]
+node1
+
+[jam:children]
+node3
+
+[backup]
+yuzuki

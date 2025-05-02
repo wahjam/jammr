@@ -1,0 +1,5 @@
+# Hash table sizes
+server_names_hash_bucket_size 64;
+
+# Pass URI scheme to reverse proxy (to check HTTP vs HTTPS)
+proxy_set_header X-Forwarded-Protocol $scheme;

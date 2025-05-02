@@ -1,0 +1,19 @@
+---
+- name: load docker image
+  hosts: docker
+  remote_user: root
+  tasks:
+      - name: transfer image tarball
+        synchronize:
+            src: "{{ image_name }}.tar"
+            dest: /opt/images/{{ image_name }}.tar
+      - name: load image
+        docker_image:
+            name: "{{ image_name }}"
+            source: "load"
+            load_path: /opt/images/{{ image_name }}.tar
+            force_source: True
+            force_tag: True
+  vars:
+    # docker-py is installed in virtualenv
+    ansible_python_interpreter: /opt/ansible_env/bin/python

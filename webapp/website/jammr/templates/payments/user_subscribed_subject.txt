@@ -1,0 +1,1 @@
+{{ user.username }}, jammr premium has been activated!

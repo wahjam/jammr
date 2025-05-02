@@ -1,0 +1,5 @@
+REMOTE_SMTP_HELO_DATA = jammr.net
+DKIM_CANON = relaxed
+DKIM_SELECTOR = 20200410
+DKIM_DOMAIN = jammr.net
+DKIM_PRIVATE_KEY = /etc/exim4/dkim.private.key

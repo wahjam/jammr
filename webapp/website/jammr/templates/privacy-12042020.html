@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+
+{% block title %}Privacy Policy | jammr{% endblock %}
+
+{% block content %}
+<section class="page_title">
+    <h1>Privacy Policy</h1>
+    <h2>How we use your personal information</h2>
+</section><!-- /.page_title -->
+
+<section class="full_width">
+
+    <section class="three_fourth content-left">
+
+        <p>Additions made since the <a href="/privacy-25052018.html">previous revision</a> are highlighted in <span class="policy-addition">green</span> and removals are in <span class="policy-removal">strike-through</span>.</p>
+
+        <h2>Information we collect</h2>
+
+        <h3>Information you provide</h3>
+
+        <p>When signing up you provide the following information:</p>
+
+        <ul>
+            <li>Username</li>
+            <li>Email</li>
+            <li>Password</li>
+        </ul>
+
+        <p>You may optionally provide public profile information about your musical interests, instruments you play, and related topics.</p>
+
+        <p>You may optionally participate on our public forums by posting and replying to discussion topics.</p>
+
+        <p>You upload audio when participating in jam sessions, which we store as recorded jams.</p>
+
+        <p><span class="policy-addition">You provide a payment details when making purchases.  These are processed by the external payment page hosted by Stripe, our payment processor.</span></p>
+
+        <h3>Information we collect</h3>
+
+        <p>We use Google Analytics and keep industry-standard web server logs that may include:</p>
+
+        <ul>
+            <li>Your IP address</li>
+            <li>Your browser and operation system</li>
+            <li>Your language preference</li>
+            <li>Date and time you access our website</li>
+            <li>Pages you visited on our website</li>
+            <li>The website that brought you to our website</li>
+        </ul>
+
+        <h3>Cookies</h3>
+
+        <p>Our website uses <a href="http://en.wikipedia.org/wiki/HTTP_cookie">cookies</a> for jammr.net, blog.jammr.net, and forum.jammr.net.  The following list describes our cookies:</p>
+
+        <ul>
+            <li>'csrftoken' and 'sessionid' are essential to the operation of the website.  They are required in order to log in and submit forms.</li>
+            <li>'__utm' cookies do not contain personally identifiable information.  They are part of Google Analytics which we use to monitor website usage.</li>
+            <li>'cookielaw_accepted' does not contain personally identifiable information.  It indicates whether you have asked to hide the EU Cookie Law message banner.</li>
+        </ul>
+
+        <h2>How we use your personal information</h2>
+
+        <p>Your personal information is used to:</p>
+        <ul>
+            <li>Operate our service - your account information and uploaded audio enable you to participate in jam sessions and access recorded jams.  Information you post on your public profile and on the discussion forums enables you to interact with other users.</li>
+            <li>Improve our user experience - the forum posts you make and the industry-standard web server log information we collect is used to improve the website design, the client application, and our overall service and product offering.</li>
+            <li>Solve technical support or performance problems - the forum posts you make and industry-standard web server log information we collect is used to solve technical problems, provide you with technical support, and fix performance problems.</li>
+            <li>Tailor our website to our userbase - the industry-standard web server log information is used to evaluate whether to offer internationalization, language translation, and support for new devices and operating systems.</li>
+            <li>Investigate and prevent violations of our Terms &amp; Conditions - forum posts, public profile information, account information, and industry-standard web server log information is used to handle incidents of abuse, illegal activity, and other violations of our Terms &amp; Conditions.</li>
+            <li><span class="policy-addition">Fulfil our tax responsibilities - in order to comply with tax regulations around the world we are obliged to process your personal data to calculate sales tax and generate invoices.</span></li>
+        </ul>
+
+        <p>We do not sell your personal information.</p>
+
+        <p>We only share your personal information in the following circumstances:</p>
+
+        <ul>
+            <li>Google Analytics - we use this service to monitor website usage, it is designed not to store personally identifiable information.</li>
+            <li>Google reCAPTCHA - we use this service to protect our service from spam and bots.</li>
+            <li><span class="policy-addition">Stripe - we use this service to process subscriptions and credit card payments.</span></li>
+            <li><span class="policy-removal">Mailchimp - we use this service to send emails to users and run our newsletter.</span></li>
+        </ul>
+
+        <h2>Lawful basis</h2>
+
+        <p>We process information about you in order to provide service according to our Terms &amp; Conditions.</p>
+
+        <h2>Options regarding your personal information</h2>
+
+        <p>You do not need to disclose your real name in order to use our website.  Only share what you are comfortable with.</p>
+
+        <p>You can opt in to <span class="policy-removal">our mailing list</span><span class="policy-addition">receive informational emails from us</span> when you register your account.  If you wish to opt out later please follow the unsubscription information in the email or email <a href="mailto:info@jammr.net">info@jammr.net</a> to have yourself removed.</p>
+
+        <p>You can delete your account and associated personal information <span class="policy-removal">by emailing <a href="mailto:info@jammr.net">info@jammr.net</a></span><span class="policy-addition">from your <a href="{% url 'profiles_edit_profile' %}">Profile Page</a></span>.</p>
+
+        <p>If you have any questions, you can contact us at <a href="mailto:info@jammr.net">info@jammr.net</a>.</p>
+
+        <p>Please see <a href="http://aboutcookies.org/">aboutcookies.org</a> for information on managing cookies.</p>
+
+    </section><!-- /.three_fourth content-->
+
+    <section class="one_fourth last">
+
+    </section><!-- /.one_fourth -->
+
+</section><!-- /.full_width -->
+{% endblock content %}

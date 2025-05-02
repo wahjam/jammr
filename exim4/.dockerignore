@@ -1,0 +1,7 @@
+# Ignore everything...
+**/*
+
+# ...except
+!dkim.private.key
+!exim4.conf.localmacros
+!update-exim4.conf.conf

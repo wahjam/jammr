@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block title %}Recorded jam from {{ object.start_date|date:"D F j, Y, H:i e" }} | jammr{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{{ STATIC_URL }}mediaelement/mediaelementplayer.min.css">
+{% endblock css %}
+
+{% block content %}
+<section class="page_title">
+    <h1>Recorded jam from {{ object.start_date|date:"D F j, Y, H:i e" }}</h1>
+    <h2>Listen, share, or download this recorded jam session</h2>
+</section><!-- /.page_title -->
+
+<section class="full_width">
+    <section class="three_fourth content-left">
+        <audio controls="control" preload="none" src="{{ object.mix_url }}" type="audio/mp4"></audio>
+        <div class="share-buttons">
+            <span id="fb-like-placeholder"></span>
+
+            <a href="https://twitter.com/share" class="twitter-share-button" id="twitter-share-button" data-url="{{ request.build_absolute_uri }}" data-text="Listen to this online jam session from jammr.net!" data-related="jammr_music">Tweet</a>
+            <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+        </div>
+
+        <table>
+            <tr><td>Start date:</td><td>{{ object.start_date|date:"D F j, Y, H:i e" }}</td></tr>
+            <tr><td>Duration:</td><td>{{ object.duration|time:"H:i:s" }}</td></tr>
+            <tr><td>Users:</td><td>
+                {% for user in object.users.all %}
+                    <a href="{{ user.get_absolute_url }}">{{ user.username }}</a>
+                {% endfor %}
+            </td></tr>
+            <tr><td>Download:</td><td><a href="{{ object.mix_url }}">Download jam (.m4a)</a></tr>
+            {% if can_download_tracks %}
+                <tr><td>Tracks download:</td><td><a
+                        href="{{ object.tracks_url }}"
+                    >Download tracks (.zip)</a></td></tr>
+            {% endif %}
+            <tr><td>License:</td><td>Creative Commons Attribution-ShareAlike 3.0 <a href="/terms.html">(more info)</a></td></tr>
+        </table>
+    </section><!-- /.three_fourth -->
+
+    <section class="one_fourth last">
+        <section class="content_box content_box_black">
+        <div class="inside">
+            <h4>About us</h4>
+            <p>jammr lets you play music with people from around the world. Plug in your instrument and start jamming.</p>
+            <a href="/" class="button orange"><span>Learn more</span></a>
+        </div>
+        </section><!-- /.content_box -->
+    </section><!-- /.one_fourth -->
+</section><!-- /.full_width -->
+{% endblock content %}
+
+{% block scripts %}
+<script type="text/javascript" src="{{ STATIC_URL }}mediaelement/mediaelement-and-player.min.js"></script>
+<script type="text/javascript">
+    $(function() {
+        {% if not can_download_tracks %}
+        $('#tracks_link').tooltip({ show: false });
+        {% endif %}
+        $('audio').mediaelementplayer({
+            success: function (mediaElement, domObject) {
+                function oncanplay() {
+                    m = document.location.hash.match(/t=(\d+)m(\d+)s/);
+                    if (m !== null) {
+                        var minutes = parseInt(m[1], 10);
+                        var seconds = parseInt(m[2], 10);
+                        mediaElement.setCurrentTime(minutes * 60 + seconds);
+                    }
+                    mediaElement.removeEventListener('canplay', oncanplay);
+                };
+                mediaElement.addEventListener('canplay', oncanplay);
+            }
+        });
+
+        /* Override social buttons with URL including anchor for media player seek */
+        $('#fb-like-placeholder').html('<iframe src="//www.facebook.com/plugins/like.php?href=' + encodeURIComponent(document.location.href) + '&amp;send=false&amp;layout=button_count&amp;width=100&amp;show_faces=false&amp;font&amp;colorscheme=light&amp;action=like&amp;height=21&amp;appId=216970038457848" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:100px; height:21px;" allowTransparency="true"></iframe>');
+        $('#twitter-share-button').attr('data-url', document.location.href);
+    });
+</script>
+{% endblock scripts %}

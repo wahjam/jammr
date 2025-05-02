@@ -1,0 +1,1 @@
+{{ topics|length }} new forum post{{ posts|length|pluralize }}

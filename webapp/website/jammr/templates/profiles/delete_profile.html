@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}Delete Profile | jammr{% endblock %}
+
+{% block content %}
+<section class="page_title">
+    <h1>Delete Profile</h1>
+    <h2>Are you sure you want to delete your profile?</h2>
+</section><!-- /.page_title -->
+<section class="full_width">
+    {% if has_subscription %}
+    <div class="message-box yellow">
+        <h3>Want to cancel your Premium subscription?</h3>
+        <p>You will no longer be able to log in if you delete your account.</p>
+        <p>If you just want to cancel your Premium subscription but keep your free account please <a href="{% url 'payments-manage' %}">click here</a> instead.</p>
+    </div>
+    {% endif %}
+
+    <form action="" method="post">
+    {% csrf_token %}
+    {{ form.non_field_errors }}
+
+    <p>If you decide to delete your profile:
+    <ul>
+        <li>You will no longer be able to log in with username "{{ user.username }}".</li>
+        <li>If you have a premium subscription it will be canceled.</li>
+        <li>Your personal information including email address, IP address, profile information, and forum avatar image will be deleted.</li>
+        <li>Your forum posts will be replaced with "Deleted" and attachments will be deleted.</li>
+    </ul>
+    </p>
+
+    <p>Your username will stay reserved to prevent someone impersonating you in
+    the future.  Your recorded jams may stay available for some time as a
+    courtesy to the other users who took part in those jams.  Please email
+    <a href="mailto:info@jammr.net">info@jammr.net</a> if you have any
+    questions.</p>
+
+    <p>Are you sure you want to delete your account?</p>
+
+    <section class="clear_full"></section><!-- /.clear_full -->
+    <input type="submit" value="Yes, delete my account"></input>
+    &nbsp;&nbsp;
+    <a href="{% url 'profiles_edit_profile' %}">No, don't delete my account</a>
+
+    </form>
+</section>
+{% endblock content %}

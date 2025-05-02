@@ -1,0 +1,14 @@
+{% extends "emails/base.txt" %}
+{% block body %}
+Hi {{ user.username }},
+Your jammr payment details have been updated. Future charges will be made to
+your new card ending in {{ subscription.get_card_last4 }}.
+
+You can manage your subscription here:
+https://{{ domain }}{% url 'payments-manage' %}
+
+If you have any questions, don't hesitate to contact info@jammr.net for help.
+
+Happy jamming,
+jammr team
+{% endblock %}

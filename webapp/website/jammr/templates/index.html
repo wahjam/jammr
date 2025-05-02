@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+
+{% block title %}Jam together online | jammr{% endblock %}
+
+{% block headextra %}
+<meta name="description" content="Jam together online using jammr.  Play live online jam sessions with other musicians for free." />
+<meta name="keywords" content="jammr, jam online, online jamming, online jam sessions, live jam, online music collaboration, recording, music, audio, software, social" />
+{% endblock headextra %}
+
+{% block navdownload %}
+{% if num_public_users > 0 %}
+<div class="num-public-users navright">{{ num_public_users }} user{{ num_public_users|pluralize }} jamming now!</div>
+{% endif %}
+{% endblock navdownload %}
+
+{% block precontent %}
+<section id="banner-container">
+    <section class="text_box">
+        <table class="invisible_table">
+            <tr>
+                <td style="width:60px;"></td>
+                <td style="width:20px;"></td>
+                <td>
+                    <iframe width="560" height="315" src="//www.youtube.com/embed/gP2nREXoP4M?rel=0" frameborder="0" allowfullscreen></iframe>
+                </td>
+                <td style="width:60px;"></td>
+                <td style="width:440px;">
+                    <h1>Play online jam sessions</h1>
+                    <ul>
+                        <li>Jam with friends or musicians around the world</li>
+                        <li>Any instrument or vocals</li>
+                        <li>Public and private jam sessions</li>
+                        <li>Listen to and download recordings of your jams</li>
+                    </ul>
+                    <div>
+                        <a href="/download.html" class="button button-big orange" target="_self"><span>DOWNLOAD NOW</span></a>
+                    </div>
+                </td>
+            </tr>
+        </table><!-- /.invisible_table -->
+    </section><!-- /.text_box -->
+</section><!-- #banner-container -->
+{% endblock %}
+
+{% block content %}
+<section class="full_width">
+
+<section class="feature_boxes">
+<ul class="ca-menu">
+    <li>
+    <a href="/download.html">
+        <span class="ca-icon">u</span>
+        <div class="ca-content">
+            <h2 class="ca-main">Improve your playing</h2>
+            <h3 class="ca-sub">Build technique while playing real, meaningful jams with other musicians.</h3>
+        </div>
+    </a>
+    </li>
+    <li>
+    <a href="/download.html">
+        <span class="ca-icon">e</span>
+        <div class="ca-content">
+            <h2 class="ca-main">Learn new styles</h2>
+            <h3 class="ca-sub">Rock, blues, jazz, funk, electronic.  Anything goes!</h3>
+        </div>
+    </a>
+    </li>
+    <li>
+    <a href="/download.html">
+        <span class="ca-icon">+</span>
+        <div class="ca-content">
+            <h2 class="ca-main">Stop lugging gear</h2>
+            <h3 class="ca-sub">Play from the comfort of your home without dragging around music gear.</h3>
+        </div>
+    </a>
+    </li>
+    <li>
+    <a href="/download.html">
+        <span class="ca-icon">P</span>
+        <div class="ca-content">
+            <h2 class="ca-main">Jam anytime</h2>
+            <h3 class="ca-sub">Play for just 15 minutes or at 2 in the morning.  Always here, quick and easy!</h3>
+        </div>
+    </a>
+    </li>
+</ul><!-- /.ca-menu -->
+<section class="clear_full"></section>
+</section><!-- /.feature_boxes -->
+
+<section class="divider_line"></section>
+<p>jammr lets you play with musicians over the internet.  It lets you jam together online whenever you want with a community of musicians across all styles and genres.  If you've ever gotten bored of backing tracks or practicing alone, jammr makes making music fun again!</p>
+<h4>Electric, accoustic, software instruments, or vocals</h4>
+<p>Whether you play an instrument or sing, if there's a way to record on your computer then you can play online using jammr.  Get jamming in minutes whether you play guitar, drums, violin, sing, or rap.</p>
+<h4>Play without lag</h4>
+<p>jammr just works with almost any internet connection.  Lag is not an issue because of the clever way that jammr works.  Play in tempo with musicians in Tokyo, LA, and Rio de Janeiro?  No problem.</p>
+<h4>Public and private jam sessions</h4>
+<p>Public jam sessions are open to anyone and are a fun way to jam with other musicians.  But sometimes you want to play more seriously with bandmates or friends.  With jammr you can create private jam sessions and only invite your friends, too.
+<h4>Listen to and share your jams</h4>
+<p>Jams are automatically recorded so you can listen to or share them with your friends.  It's also possible to download individual instrument tracks for remixing.</p>
+<h4>VST effects and instrument plugins</h4>
+<p>Use software plugins with jammr to expand your tonal palette.  MIDI controllers are also supported for toggling effects or playing notes on software instrument plugins.</p>
+<h4>Works on Windows, Mac, and Linux</h4>
+<p>jammr is supported on Windows, Mac, and Linux.  It's easy to get started.</p>
+<section class="strap_box">
+    <h3>Ready to start jamming?</h3>
+    <div>
+        <a href="/download.html" class="button button-big orange" target="_self"><span>DOWNLOAD NOW</span></a>
+    </div>
+</section>
+
+</section><!-- /.full_width -->
+{% endblock content %}

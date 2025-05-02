@@ -1,0 +1,11 @@
+# Ignore everything...
+**/*
+
+# ...except
+!docker-entrypoint.sh
+!jam.py
+!jamd.tac
+!protocol.py
+!serverprocess.py
+!settings.py
+!pip-pkgs/

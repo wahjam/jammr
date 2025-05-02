@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+
+{% load payments %}
+
+{% block title %}Get premium! | jammr{% endblock %}
+
+{% block content %}
+{% if checkout_session_id %}
+<section class="page_title">
+    <h1>Redirecting to Stripe</h1>
+    <h2>Please wait...</h2>
+</section><!-- /.page_title -->
+<script src="https://js.stripe.com/v3"></script>
+<script type="text/javascript">
+    var stripe = Stripe('{{ stripe_pub_key }}');
+    stripe.redirectToCheckout({
+        sessionId: "{{ checkout_session_id }}"
+    });
+</script>
+{% else %}
+<section class="page_title">
+    <h1>Choose a Pricing Plan</h1>
+    <h2>Find the plan that's right for you!</h2>
+</section><!-- /.page_title -->
+
+<section class="full_width">
+    {% if stripe_internal_error %}
+    <div class="message-box red">
+        <h3>Unable to process your payment</h3>
+        <p>An error occurred while processing your payment.  Please check your payment details and try again.  We've been notified and will look into the issue if it was due to technical problems.</p>
+    </div>
+    {% endif %}
+
+    <div class="currencies">
+        Currency:
+        {% for p in plans %}
+            <a href="{% url 'payments-subscribe-with-plan' p.id %}">{{ p.currency|currency_symbol }}</a>
+        {% endfor %}
+    </div>
+
+    <div class="price-table three-columns">
+        <div class="price-column">
+            <ul>
+                <li class="thead">What you get</li>
+                <li class="price">Price</li>
+                <li class="item">Public jam sessions</li>
+                <li class="item">Private jam sessions</li>
+                <li class="item">Download and listen to recorded jams</li>
+                <li class="item">Support future development</li>
+            </ul>
+        </div><!-- /.price-column -->
+        <div class="price-column price-column-dark">
+            <ul>
+                <li class="thead">Free</li>
+                <li class="price">{{ plan.currency|currency_symbol }}0.00<span>/month</span></li>
+                <li class="item">Yes</li>
+                <li class="item">No</li>
+                <li class="item">No</li>
+                <li class="item">No</li>
+                <li class="choose-button">
+                    <a class="button gray" href="{% url 'profiles_edit_profile' %}">
+                        <span>Get Free</span>
+                    </a>
+                </li>
+            </ul>
+        </div><!-- /.price-column -->
+        <div class="price-column highlight">
+            <ul>
+                <li class="thead">Premium</li>
+                <li class="price">{{ plan.currency|currency_symbol }}{{ plan.amount }}<span>/month</span></li>
+                <li class="item">Yes</li>
+                <li class="item">Yes</li>
+                <li class="item">Yes</li>
+                <li class="item">Yes</li>
+                <li class="choose-button">
+                {% if user.is_authenticated %}
+                    <a class="button orange" id="checkout-button">
+                        <span>Get Premium</span>
+                    </a>
+                    <form id="premium-form" action="" method="post">
+                        {% csrf_token %}
+                    </form>
+                    <script>
+                        var checkoutButton = document.querySelector('#checkout-button');
+                        checkoutButton.addEventListener('click', function() {
+                            document.querySelector('#premium-form').submit();
+                        });
+                    </script>
+                    <noscript>Please enable JavaScript!</noscript>
+                {% else %}
+                    <a href="{% url 'login' %}?next={% url 'payments-subscribe' %}" class="button button-big orange"><span>Get Premium</span></a>
+                {% endif %}
+                </li>
+            </ul>
+        </div><!-- /.price-column -->
+        <section class="clear_full"></section>
+    </div><!-- /.price-table -->
+
+    {% if offer_free_trial %}
+    <section class="strap_box">
+        <h3>Premium comes with a {{ plan.trial_period_days }}-day free trial!</h3>
+        <p>Get Premium today and try it for free.  You will receive a reminder
+        email before the trial period ends and can cancel any time.</p>
+        <p>You will be billed on the same day each month, or the last day of
+        the month if the current month does not have that day.</p>
+    </section>
+    {% endif %}
+
+    <section class="strap_box">
+        <h3>Have questions about pricing?</h3>
+        <p>If you're not sure you can get started with a free account and then upgrade when you decide to take advantage of Premium features.</p>
+        <p>The <a href="/faq.html">Help page</a> covers common questions about Premium.</p>
+    </section>
+</section>
+{% endif %}
+{% endblock content %}

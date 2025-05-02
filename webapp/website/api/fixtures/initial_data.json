@@ -1,0 +1,7 @@
+[{"pk": 3, "model": "sites.site", "fields": {"domain": "blog.jammr.net", "name": "jammr blog"}},
+ {"pk": 2, "model": "sites.site", "fields": {"domain": "forum.jammr.net", "name": "jammr forum"}},
+ {"pk": 1, "model": "sites.site", "fields": {"domain": "jammr.net", "name": "jammr website"}},
+ {"pk": 1000, "model": "auth.permission", "fields": {"codename": "can_create_private_jams", "name": "Can create private jams", "content_type": ["auth", "user"]}},
+ {"pk": 1001, "model": "auth.permission", "fields": {"codename": "can_read_token", "name": "Can read auth token", "content_type": ["auth", "user"]}},
+ {"pk": 1002, "model": "auth.permission", "fields": {"codename": "can_join_private_jams", "name": "Can join private jams", "content_type": ["auth", "user"]}},
+ {"pk": 1, "model": "auth.user", "fields": {"username": "wahjamsrv", "first_name": "", "last_name": "", "is_active": true, "is_superuser": false, "is_staff": false, "last_login": "2012-05-28T07:09:28.087Z", "groups": [], "user_permissions": [["can_read_token", "auth", "user"]], "password": "pbkdf2_sha256$10000$OsUaLpDCwIOg$Vp8qw1vgrdB4qOuJn3CvkV3HLmrpr0m9M7GG0Q2jGLw=", "email": "info@jammr.net", "date_joined": "2012-05-28T07:09:28.087Z"}}]

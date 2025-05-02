@@ -1,0 +1,9 @@
+---
+- name: save docker image
+  hosts: localhost
+  tasks:
+      - name: save image
+        docker_image:
+            name: "{{ image_name }}"
+            archive_path: "{{ image_name }}.tar"
+            source: "local"

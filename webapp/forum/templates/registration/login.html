@@ -1,0 +1,40 @@
+{% extends "djangobb_forum/base.html" %}
+{% load i18n %}
+{% block extra_meta %}
+<script type="text/javascript">
+$(document).ready(function() {
+    $('#id_username').focus();
+});
+</script>
+{% endblock %}
+{% block content %}
+<div class="blockform">
+    <h2><span>{% trans "Login" %}</span></h2>
+    <div class="box">
+                <form action="" method="post">
+                {% csrf_token %}
+                <div class="inform">
+                        {% if msg %}
+                        <ul class="errorlist">
+                            <li>{{ msg }}</li>
+                        </ul>
+                        {% endif %}
+                        {{ form.non_field_errors.as_ul }}
+                        <fieldset>
+                                <legend>{% trans "Sign in using your username and password" %}</legend>
+                                        <div class="infldset">
+                                                {{ form.username.errors }}
+                                                <label><strong>{{ form.username.label }}</strong><br />{{ form.username }}</label>
+                                                {{ form.password.errors }}
+                                                <label><strong>{{ form.password.label }}</strong><br />{{ form.password }}</label>
+                                        </div>
+                        </fieldset>
+                </div>
+                <p>
+            <input type="hidden" name="next" value="{{ next }}" />
+            <input type="submit" value="{% trans "Login" %}" />
+        </p>
+                </form>
+    </div>
+</div>
+{% endblock %}

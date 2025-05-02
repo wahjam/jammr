@@ -1,0 +1,11 @@
+{% extends "emails/base.txt" %}
+{% load payments %}
+{% block body %}
+Hi {{ user.username }},
+Your jammr Premium subscription has been canceled and will no longer be billed.
+
+You still have free access to Premium features until jammr shuts down on April
+30, 2025.
+
+If you have any questions, don't hesitate to contact info@jammr.net for help.
+{% endblock %}

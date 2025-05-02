@@ -1,0 +1,11 @@
+This is an exim4 SMTP relay server container image.  It listens on port 25 and
+queues outgoing mail to external SMTP servers.  Do not expose port 25 to the
+external network since this could be misused by spammers!
+
+Containers wishing to send email should set this container's hostname as the
+SMTP server.
+
+Generate DKIM keys as follows:
+
+  openssl genrsa -out dkim.private.key 2048 -outform PEM
+  openssl rsa -in dkim.private.key -out dkim.public.key -pubout -outform PEM

@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block title %}{{ profile.user.username }}'s Profile | jammr{% endblock %}
+
+{% block content %}
+<section class="page_title">
+    {% if profile.user.forum_profile.avatar %}
+        <img class="float-left" src="//forum.jammr.net{{ profile.user.forum_profile.avatar.url }}" alt="image" />
+    {% else %}
+        <img class="float-left" src="{{ STATIC_URL }}images/team_man_small.jpg" alt="image" />
+    {% endif %}
+    <h1>{{ profile.user.username }}'s Profile</h1>
+    <h2>Member Profile for {{ profile.user.username }}</h2>
+</section><!-- /.page_title -->
+<section class="full_width">
+    <section class="three_fourth content-left">
+
+        <h2>Instruments</h2>
+        {% if profile.instruments %}
+            <p>{{ profile.instruments|capfirst }}</p>
+        {% else %}
+            <p class="missing_info">No instrument information saved yet.</p>
+        {% endif %}
+        <h2>Musical influences</h2>
+        {% if profile.influences %}
+            {{ profile.influences|linebreaks }}
+        {% else %}
+            <p class="missing_info">No musical influences information saved yet.</p>
+        {% endif %}
+
+    </section><!-- /.three_fourth content-->
+    <section class="one_fourth last">
+
+        {% if profile.user == user %}
+        <section class="widget">
+            <h3>Edit your profile</h3>
+            <p>You can customize your profile.</p>
+            <a href="{% url 'profiles_edit_profile' %}" class="button orange"><span>Edit profile</span></a>
+        </section><!-- /.widget -->
+        {% else %}
+        <section class="widget">
+            <h3>Messaging</h3>
+            <p>You can send this user a private message.</p>
+            <a href="//forum.jammr.net/pm/compose/{{ profile.user.username|urlencode }}/" class="button orange"><span>Send private message</span></a>
+        </section><!-- /.widget -->
+        {% endif %}
+
+    </section><!-- /.one_fourth -->
+
+</section>
+{% endblock content %}

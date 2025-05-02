@@ -1,0 +1,7 @@
+# Ignore everything...
+**/*
+
+# ...except
+!cli.ini
+!docker-entrypoint.sh
+!restart-web-server.py

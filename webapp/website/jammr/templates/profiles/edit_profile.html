@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Profile | jammr{% endblock %}
+
+{% block content %}
+<section class="page_title">
+    <h1>Edit Profile</h1>
+    <h2>Configure your member profile</h2>
+</section><!-- /.page_title -->
+<section class="full_width">
+    <div class="message-box green">
+        <h3>Welcome to jammr!</h3>
+        <p>Click <a href="/download.html">here</a> to download and install jammr so you can start playing!</p>
+        <p>Tutorials and guides are available on the <a href="//forum.jammr.net/1/">Tech Support forum</a>.</p>
+    </div>
+
+    <section class="three_fourth content-left">
+
+    <section class="content_heading">
+        <a class="gotop" href="#"></a>
+        <h3>Account</h3>
+    </section>
+
+    <form action="" method="post">
+    {% csrf_token %}
+    {{ form.non_field_errors }}
+
+    <section class="one_fifth">
+        <h5>Username</h5>
+        <p>{{ user.username }}</p>
+        <h5>Email</h5>
+        <p>{{ user.email }}</p>
+    </section>
+
+    <section class="one_fifth">
+        <h5>Membership type</h5>
+        <p>
+            {{ user.userprofile.get_subscription_display }}
+        </p>
+        <h5>Notifications</h5>
+        {{ form.email_recorded_jams.errors }}
+        <div>{{ form.email_recorded_jams }}<label for="id_email_recorded_jams">Email recorded jams</label></div>
+    </section>
+
+    <section class="one_fifth">
+        <h5>Avatar</h5>
+        {% if profile.user.forum_profile.avatar %}
+        <img src="//forum.jammr.net{{ profile.user.forum_profile.avatar.url }}" alt="image" />
+        {% else %}
+        <img src="{{ STATIC_URL }}images/team_man_small.jpg" alt="image" />
+        {% endif %}
+        <div>
+            <a href="//forum.jammr.net/user/{{ user.username|urlencode }}/upload_avatar/" target="_blank">Upload avatar on forum</a>
+        </div>
+    </section>
+
+    <section class="clear_full"></section><!-- /.clear_full -->
+    <input type="submit" value="Save"></input>
+
+    <section class="content_heading">
+        <a class="gotop" href="#"></a>
+        <h3>Public profile</h3>
+    </section>
+
+        <h2>Instruments</h2>
+
+        {{ form.instruments.errors }}
+        <div><label for="id_instruments">Musical instruments that you play:</label></div>
+        <div>{{ form.instruments }}</div>
+        <br/>
+
+        <h2>Musical influences</h2>
+
+        {{ form.influences.errors }}
+        <div><label for="id_influences">Artists that you like:</label></div>
+        <div>{{ form.influences }}</div>
+
+        <input type="submit" value="Save"></input>
+    </form>
+
+    </section><!-- /.three_fourth content-->
+    <section class="one_fourth last">
+
+        {% if can_access_recorded_jams %}
+        <section class="widget">
+            <h3>Listen to your jams</h3>
+            <p>You can listen to your recorded jams.</p>
+            <a href="{% url 'recorded_jam_list_view' %}" class="button orange"><span>Listen to your jams</span></a>
+        </section><!-- /.widget -->
+        {% endif %}
+
+        <section class="widget">
+            <h3>View your public profile</h3>
+            <p>You can view your public profile as it appears to others.</p>
+            <a href="{% url 'profiles_profile_detail' username=user.username %}" class="button orange"><span>View public profile</span></a>
+        </section><!-- /.widget -->
+
+        <section class="widget">
+            <h3>Account management</h3>
+            {% if user.userprofile.subscription %}
+            <a href="{% url 'payments-manage' %}" class="button gray"><span>Manage subscription</span></a>
+            {% endif %}
+            <a href="{% url 'password_change' %}" class="button gray"><span>Change password</span></a>
+            <a href="{% url 'profiles_delete_profile' %}" class="button gray"><span>Delete your account</span></a>
+        </section><!-- /.widget -->
+
+    </section><!-- /.one_fourth -->
+
+</section>
+{% endblock content %}
+
+{% block css %}
+<link href="{{ STATIC_URL }}css/jquery.tagit.css" rel="stylesheet" type="text/css" />
+{% endblock css %}
+
+{% block scripts %}
+<script src="{{ STATIC_URL }}js/libs/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript">
+    $("#id_instruments").tagit({availableTags: ['banjo', 'bass', 'cello', 'clarinet', 'didgeridoo', 'dj', 'drums', 'ewi', 'flute', 'guitar', 'harmonica', 'kazoo', 'keyboard', 'mandolin', 'piano', 'sampler', 'saxophone', 'trumpet', 'ukulele', 'violin', 'vocals']});
+</script>
+{% endblock scripts %}

@@ -1,0 +1,25 @@
+site_name: jammr documentation
+theme: readthedocs
+nav:
+  - Run:
+    - Support:
+      - Answering user questions: run/support/questions.md
+      - Activating user accounts manually: run/support/activating-accounts.md
+    - Website:
+      - TLS certificates: run/website/certificates.md
+      - Banning forum spammers: run/website/spammers.md
+    - Database:
+      - Managing database records: run/database/managing-records.md
+      - Backups: run/database/backups.md
+  - Develop:
+    - Client:
+      - Setting up a development environment: develop/client/setup.md
+      - Creating a release for Windows: develop/client/release-windows.md
+      - Creating a release for macOS: develop/client/release-macos.md
+      - Creating a release for Linux: develop/client/release-linux.md
+    - Server:
+      - Overview: develop/server/overview.md
+      - Makefile: develop/server/makefile.md
+      - Setting up a development environment: develop/server/setup.md
+      - Testing changes: develop/server/test.md
+      - Deploying to production: develop/server/deploy.md

@@ -1,0 +1,15 @@
+---
+inventory_name: dev
+domain: jammr.net
+webapp_send_email: false
+webapp_stripe_dev_mode: true
+certbot_enabled: false
+certbot_staging: false
+nginx_http_published_ports: "80:80"
+nginx_https_published_ports: "443:443"
+
+# Override DNS so other containers connect to nginx-https
+nginx_https_network_aliases:
+  - jammr.net
+
+stripe_cli_enabled: true

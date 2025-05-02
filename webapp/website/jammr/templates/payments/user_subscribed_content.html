@@ -1,0 +1,15 @@
+{% extends "emails/base.html" %}
+{% load payments %}
+{% block body %}
+<p>Hi {{ user.username }},<br />
+Thank you for joining jammr Premium!  You now have full access to Premium features in jammr.</p>
+
+<p>{% if is_trialing %}Your {{ subscription.plan.trial_period_days }}-day free trial is active.  After it ends on {{ subscription.expires|date:"F jS Y" }} you will be billed {{ subscription.plan.currency|currency_symbol }}{{ subscription.plan.amount }}/month.{% else %}You will be billed {{ subscription.plan.currency|currency_symbol }}{{ subscription.plan.amount }}/month.{% endif %}</p>
+
+<p>You can view the next billing date and cancel your subscription <a href="https://{{ domain }}{% url 'payments-manage' %}">here</a>.</p>
+
+<p>If you have any questions, don't hesitate to contact info@jammr.net for help.</p>
+
+<p>Happy jamming,<br />
+jammr team</p>
+{% endblock %}

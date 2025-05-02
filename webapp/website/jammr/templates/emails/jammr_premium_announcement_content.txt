@@ -1,0 +1,22 @@
+{% extends "emails/base.txt" %}
+{% block body %}
+Hi {{user.username}},
+We are delighted to announce that jammr Premium is now available.  Premium users get:
+* Private jam sessions to play with your friends and have more control
+* Recorded jams for listening to and downloading your jams (including individual instrument audio tracks)
+* Support jammr and its future development!
+
+Premium is priced at only $9.99/€9.99/£9.99 a month.  Get Premium here: https://jammr.net/payments/subscribe
+
+This concludes the beta period when all features were enabled on free accounts.  Free accounts will still be available going forward and can participate in public jams.  Recorded jams from the beta period will remain available for listening and download to free users for the foreseeable future.
+
+Many new users joined over the past few weeks due to coronavirus lockdowns.  With unemployment growing as a result of the pandemic we would have liked to keep everything free for longer, but we've had to grow the team and get more servers in order to help new users jam together online.
+
+We are updating our Privacy Policy to cover payments.  You can review the new policy here: https://jammr.net/privacy-12042020.html
+
+Some of you have jammed together for a long time.  You have helped new users and made jammr a friendly community for musicians around the world.  Thank you so much for your support, feedback, and encouragement!
+
+If you have any questions, feel free to reply to this email.
+
+Happy jamming!
+{% endblock %}

@@ -1,0 +1,11 @@
+{% extends "emails/base.txt" %}
+{% load payments %}
+{% block body %}
+Hi {{ user.username }},
+Your jammr premium renewal was recently canceled and premium features have now been disabled.
+
+If you have any questions, don't hesitate to contact info@jammr.net for help.
+
+Happy jamming,
+jammr team
+{% endblock %}

@@ -1,0 +1,14 @@
+[dev1]
+dev1.jammr.net external_hostname=dev1.jammr.net recorded_jams_max_processes=4 jamd_max_jams=64
+
+[docker:children]
+dev1
+
+[web:children]
+dev1
+
+[jam:children]
+dev1
+
+[backup]
+jammrbackup

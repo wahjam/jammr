@@ -1,0 +1,12 @@
+---
+inventory_name: staging
+domain: staging.jammr.net
+external_hostname: node1.staging.jammr.net
+webapp_send_email: false
+webapp_stripe_dev_mode: true
+certbot_enabled: true
+certbot_staging: true
+nginx_http_published_ports: "80:80"
+nginx_https_published_ports: "443:443"
+nginx_https_network_aliases:
+stripe_cli_enabled: false

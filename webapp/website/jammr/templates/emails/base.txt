@@ -1,0 +1,8 @@
+{% block body %}{% endblock %}
+
+---
+{% block footer %}{% endblock %}
+
+jammr ltd is a limited company registered in England and Wales.  Company no.
+12553014.  Registered office address: C/O The Accountancy Partnership Suite 1,
+5th Floor, City Reach, 5 Greenwich View Place, London, England, E14 9NN.

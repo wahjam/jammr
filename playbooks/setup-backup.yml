@@ -1,0 +1,61 @@
+---
+- name:
+  hosts: backup
+  remote_user: root
+  tasks:
+      - name: add jammrbackup user
+        user:
+            name: jammrbackup
+            password_lock: True
+            generate_ssh_key: True
+      - name: get ssh public key
+        slurp:
+            src: /home/jammrbackup/.ssh/id_rsa.pub
+        register: pubkey_base64
+- name:
+  hosts: docker
+  remote_user: root
+  tasks:
+      - name: add jammrbackup user
+        user:
+            name: jammrbackup
+            group: docker
+            password_lock: True
+      - name: expand .pgpass template
+        template:
+            src: "../backup/.pgpass.j2"
+            dest: "/home/jammrbackup/.pgpass"
+            owner: jammrbackup
+            mode: 0600
+      - name: expand backup script template
+        template:
+            src: "../backup/backup.sh.j2"
+            dest: "/home/jammrbackup/backup.sh"
+            owner: jammrbackup
+            mode: 0700
+      - name: add .ssh/authorized_keys entry for jammrbackup user
+        authorized_key:
+            user: jammrbackup
+            key_options: "command=\"/home/jammrbackup/backup.sh\",from=\"{{ hostvars[groups['backup'][0]]['ansible_facts']['default_ipv4']['address'] }}\",no-agent-forwarding,no-port-forwarding,no-pty,no-X11-forwarding"
+            key: "{{ hostvars[groups['backup'][0]]['pubkey_base64']['content'] | b64decode }}"
+  vars_files:
+      - global_vars.yml
+- name:
+  hosts: backup
+  remote_user: root
+  tasks:
+      - name: add ssh known_hosts entry
+        known_hosts:
+            key: "{{ groups['docker'][0] }} ssh-rsa {{ hostvars[groups['docker'][0]]['ansible_facts']['ssh_host_key_rsa_public'] }}"
+            name: "{{ groups['docker'][0] }}"
+            path: /home/jammrbackup/.ssh/known_hosts
+      - name: change owner of ssh known_hosts file
+        file:
+            path: /home/jammrbackup/.ssh/known_hosts
+            owner: jammrbackup
+      - name: add crontab entry
+        cron:
+            name: backup
+            special_time: daily
+            user: jammrbackup
+            job: "ssh -T jammrbackup@{{ groups['docker'][0] }} >$(date +\\%F).pg"

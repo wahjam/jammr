@@ -1,0 +1,9 @@
+other/
+playbooks/*.tar
+secrets.yml
+*.pyc
+*.pyo
+*.swp
+*.retry
+.target
+todo.txt

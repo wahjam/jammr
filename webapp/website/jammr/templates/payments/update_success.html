@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %}Payment details updated | jammr{% endblock %}
+
+{% block content %}
+<section class="page_title">
+    <h1>Payment details updated</h1>
+    <h2>Thank you for updating your payment details!</h2>
+</section><!-- /.page_title -->
+
+<section class="full_width">
+    <p>You will receive an email confirming your payment details have been updated</p>
+
+    <p>Return to your profile page <a href="{% url 'profiles_edit_profile' %}">here</a>.</p>
+</section>
+{% endblock content %}

@@ -1,0 +1,11 @@
+---
+inventory_name: prod
+domain: jammr.net
+webapp_send_email: true
+webapp_stripe_dev_mode: false
+certbot_enabled: false
+certbot_staging: false
+nginx_http_published_ports: "80:80"
+nginx_https_published_ports: "443:443"
+nginx_https_network_aliases:
+stripe_cli_enabled: false

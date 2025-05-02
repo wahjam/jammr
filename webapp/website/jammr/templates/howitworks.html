@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}How it works | jammr{% endblock %}
+
+{% block content %}
+<section class="page_title">
+    <h1>How it works</h1>
+    <h2>Find out how to jam</h2>
+</section><!-- /.page_title -->
+
+<section class="full_width">
+
+<iframe width="560" height="315" src="//www.youtube.com/embed/sEnnIgFZXao?rel=0" frameborder="0" allowfullscreen></iframe>
+
+<section class="text_box">
+    <h3>How can I jam without latency?</h3>
+    <p>If you have ever tried to jam together over a voice or video call, you have experienced how internet latency makes it impossible to play in sync.  You don't hear each other at the same time, nevermind staying in tempo.  jammr solves this problem by matching the chord progression you are playing so it can keep everyone synchronized.</p>
+    <p>jammr is <b>live but not real-time</b>.  You hear what others played last time around the chord progression, and they hear what you played last time.  This way jammr works great even on high-latency internet connections!</p>
+    <p>If you're wondering how this works musically, imagine playing a note over the G chord that I'm playing.  The note sounds good over a G chord regardless of whether it's the G chord that I'm playing right now or if it's the G chord I played last time around the chord progression.  This is how jammr allows you to jam with people around the world without worrying about latency.</p>
+    <p><b>Most users perceive jammr as real-time because it feels natural!</b></p>
+</section><!-- /.text_box -->
+
+<section class="text_box">
+    <table class="invisible_table">
+        <tr>
+            <td style="width:440px;">
+                <h3>How to do I get started?</h3>
+                <ol>
+                    <li>Download and install jammr <a href="/download.html">here</a></li>
+                    <li>Connect your instrument or microphone</li>
+                    <li>Start the jammr program on your computer</li>
+                </ol>
+            </td>
+            <td style="width:60px;"></td>
+            <td style="width:20px;"></td>
+            <td><a href="/download.html"><img src="{{ STATIC_URL }}images/guitar.png" alt="image" /></a></td>
+            <td style="width:60px;"></td>
+        </tr>
+    </table><!-- /.invisible_table -->
+</section><!-- /.text_box -->
+
+<section class="strap_box">
+    <h3>Ready to start jamming?</h3>
+    <div>
+        <a href="/download.html" class="button button-big orange" target="_self"><span>DOWNLOAD NOW</span></a>
+    </div>
+</section>
+
+</section><!-- /.full_width -->
+{% endblock %}

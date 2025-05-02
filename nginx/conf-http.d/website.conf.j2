@@ -1,0 +1,12 @@
+server {
+	listen          80;
+	server_name     {{ domain }} www.{{ domain }};
+
+	location        / {
+		rewrite     ^ https://{{ domain }}$request_uri? permanent;
+	}
+
+	location /.well-known/ {
+		root /usr/share/certbot-webroot;
+	}
+}

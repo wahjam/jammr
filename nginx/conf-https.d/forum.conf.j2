@@ -1,0 +1,22 @@
+server {
+	listen          443 ssl;
+	server_name     forum.{{ domain }};
+
+	include acl;
+
+	# Forum spammers have been using this tool to check their posts daily.
+	# Block them :)
+	if ($http_referer ~* (www.urlopener.com)) {
+		return 403;
+	}
+
+	location / {
+		include proxy_params;
+		proxy_pass http://forum:8000;
+		client_max_body_size 10m;
+	}
+
+	location ~ ^(/static/|/media/) {
+		root /usr/share/forum;
+	}
+}

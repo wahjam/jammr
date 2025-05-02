@@ -1,0 +1,13 @@
+{% extends "emails/base.html" %}
+{% block body %}
+<p>Your jam session from {{ jam.start_date|date:"D M j, H:i e" }} is <a href="https://jammr.net{{ jam.get_absolute_url }}">now available for listening here</a>.</p>
+
+<p>Or <a href="{{ jam.mix_url }}">click here to download</a> the jam to your computer, tablet, or phone.</p>
+
+{% if perms.recorded_jams.can_download_tracks %}
+<p>Individual tracks for this jam session are <a href="{{ jam.tracks_url }}">available for download here</a>.</p>
+{% endif %}
+{% endblock %}
+{% block footer %}
+<p>If you do not wish to receive these emails please disable notifications from <a href="https://jammr.net/profiles/edit/">your account profile</a>.</p>
+{% endblock %}

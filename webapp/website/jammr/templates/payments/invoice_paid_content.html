@@ -1,0 +1,33 @@
+{% extends "emails/base.html" %}
+{% load payments %}
+{% block body %}
+<p>Invoice from jammr ltd<br />
+Email: info@jammr.net<br />
+Website: https://jammr.net/<br />
+VAT number: GB347065495</p>
+
+{% if billing_details %}
+<p>Customer name: {{ billing_details.name }}<br />
+Customer email: {{ billing_details.email }}<br />
+Customer address: {{ billing_details.address.line1 }}<br />
+{% if billing_details.address.line2 %}{{ billing_details.address.line2 }}<br />{% endif %}
+{{ billing_details.address.city }}{% if billing_details.address.state %}, {{ billing_details.address.state }}{% endif %}{%if billing_details.address.postal_code %}, {{ billing_details.address.postal_code }}{% endif %}<br />
+{{ billing_details.address.country }}</p>
+{% endif %}
+
+<p>Account username: {{ user.username }}<br />
+Account email address: {{ user.email }}<br />
+Invoice number: {{ invoice.seq_num }}<br />
+Date: {{ invoice.date|date:"F jS Y" }}</p>
+
+<p>Item: jammr Premium, Quantity: 1, Price: {{ invoice.currency|currency_symbol }}{{ pre_tax_amount }}</p>
+<p>Subtotal: {{ invoice.currency|currency_symbol }}{{ pre_tax_amount }}</p>
+<p>VAT ({% if invoice.tax_country %}for {{ invoice.tax_country }} {% endif %}at {{ invoice.tax_percentage }}%): {{ invoice.currency|currency_symbol }}{{ tax_amount }}</p>
+<p>Total: {{ invoice.currency|currency_symbol }}{{ invoice.amount }}</p>
+{% if invoice.amount == 0 %}
+<p>You are currently in the free trial period until {{ subscription.expires|date:"F jS Y" }} and will be charged {{ invoice.currency|currency_symbol }}{{ subscription.plan.amount }} monthly afterwards.  You can cancel your subscription any time at https://{{ domain }}{% url 'payments-manage' %}.</p>
+{% else %}
+<p>The credit card you subscribed with has been charged.  Manage your jammr premium subscription at <a href="https://{{ domain }}{% url 'payments-manage' %}">https://{{ domain }}{% url 'payments-manage' %}</a>.</p>
+{% endif %}
+<p>If you have any questions, please contact info@jammr.net.</p>
+{% endblock %}

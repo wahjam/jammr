@@ -1,0 +1,18 @@
+# Hash table sizes
+server_names_hash_bucket_size 64;
+
+# SSL settings
+ssl_protocols TLSv1 TLSv1.1 TLSv1.2; # Dropping SSLv3, ref: POODLE
+ssl_prefer_server_ciphers on;
+
+# SSL wildcard certificate for all domains
+{% if certbot_enabled %}
+ssl_certificate /etc/letsencrypt/live/{{ domain }}/fullchain.pem;
+ssl_certificate_key /etc/letsencrypt/live/{{ domain }}/privkey.pem;
+{% else %}
+ssl_certificate /etc/nginx/jammr.net.crt;
+ssl_certificate_key /etc/nginx/jammr.net.key;
+{% endif %}
+
+# Pass URI scheme to reverse proxy (to check HTTP vs HTTPS)
+proxy_set_header X-Forwarded-Protocol $scheme;

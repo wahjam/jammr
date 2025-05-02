@@ -1,0 +1,12 @@
+# Ignore everything...
+**/*
+
+# ...except
+!docker-entrypoint.sh
+!archive-jam.py
+!jammr_api.py
+!mix.py
+!pip-pkgs/
+!recorded_jamsd.tac
+!settings.py
+!upload.py

@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+
+{% block title %}Download | jammr{% endblock %}
+
+{% block content %}
+<section class="page_title">
+    <h1>Download</h1>
+    <h2>Get the latest version of jammr!</h2>
+</section><!-- /.page_title -->
+
+<section class="full_width">
+
+    <section class="strap_box">
+        <h3>Download jammr for {{ platform }}</h3>
+        <p>See below for other operating systems.</p>
+        <a
+            {% if platform == "Mac OS X" %}
+            href="{{ STATIC_URL }}jammr.dmg"
+            {% elif platform == "Linux" %}
+            href="{{ STATIC_URL }}jammr-client_amd64.deb"
+            {% else %}
+            href="{{ STATIC_URL }}Jammr-installer.exe"
+            {% endif %}
+            class="button orange" target="_self"><span>Download</span></a>
+        {% if platform == "Linux" %}
+	<p style="padding-top: 15px">or</p>
+	<a href="https://flathub.org/apps/details/net.jammr.jammr"><img width="240" alt="Download on Flathub" src="{{ STATIC_URL }}images/flathub-badge-en.png"/></a>
+	{% endif %}
+    </section><!-- /.strap_box --> 
+
+    <section class="divider_line"></section>
+
+    <h3>Windows</h3>
+
+    <p>System requirements:
+        <ul>
+            <li>Windows Vista or later</li>
+            <li>Works on 32- and 64-bit</li>
+            <li>2 GB RAM (recommended)</li>
+            <li>Internet connection</li>
+        </ul>
+    </p>
+
+    <div>
+        <a href="{{ STATIC_URL }}Jammr-installer.exe" class="button orange" target="_self"><span>Download</span></a></p>
+    </div>
+
+    <section class="divider_line"></section>
+
+    <h3>Mac</h3>
+
+    <p>System requirements:
+        <ul>
+            <li>macOS High Sierra (10.13) or later</li>
+            <li>2 GB RAM (recommended)</li>
+            <li>Internet connection</li>
+        </ul>
+    </p>
+
+    <div>
+        <a href="{{ STATIC_URL }}jammr.dmg" class="button orange" target="_self"><span>Download</span></a></p>
+    </div>
+
+    <section class="divider_line"></section>
+
+    <h3>Linux</h3>
+
+    <p>System requirements:
+        <ul>
+            <li>Ubuntu 20.04 LTS x86_64 (amd64)</li>
+            <li>2 GB RAM (recommended)</li>
+            <li>Internet connection</li>
+        </ul>
+    </p>
+
+    <div>
+        <a href="{{ STATIC_URL }}jammr-client_amd64.deb" class="button orange" target="_self"><span>Download</span></a>
+    </div>
+
+    <p>or</p>
+
+    <div>
+        <a href="https://flathub.org/apps/details/net.jammr.jammr"><img width="240" alt="Download on Flathub" src="{{ STATIC_URL }}images/flathub-badge-en.png"/></a>
+    </div>
+
+</section><!-- /.full_width -->
+{% endblock content %}

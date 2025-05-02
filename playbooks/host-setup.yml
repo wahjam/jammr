@@ -1,0 +1,158 @@
+---
+- name: install docker
+  hosts: docker
+  remote_user: root
+  tasks:
+      - name: install apt dependencies for docker repo
+        apt:
+            name: ['apt-transport-https', 'ca-certificates', 'gpg']
+            state: present
+      - name: add apt key for docker repo
+        apt_key: url=https://download.docker.com/linux/debian/gpg id=9DC858229FC7DD38854AE2D88D81803C0EBFCD88
+      - name: add docker apt repo
+        apt_repository: repo='deb https://download.docker.com/linux/debian stretch stable' state=present
+      - name: install docker-ce
+        apt: name=docker-ce=17.06.* state=present
+      - name: launch docker at boot
+        service: name=docker state=started enabled=yes
+- name: install docker-py
+  hosts: docker
+  remote_user: root
+  tasks:
+      - name: install pip, setuptools, and virtualenv
+        apt:
+            name: ['virtualenv', 'python-setuptools', 'python-pip']
+            state: present
+      - name: install docker-py inside virtualenv
+        pip: name=docker-py version=1.10.6 virtualenv=/opt/ansible_env
+- name: install rsync for file synchronization
+  hosts: docker
+  remote_user: root
+  tasks:
+      - name: install rsync
+        apt: name=rsync state=present
+      - name: create /opt/images
+        file:
+            path: /opt/images
+            state: directory
+            mode: 0755
+      - name: create /opt/volumes
+        file:
+            path: /opt/volumes
+            state: directory
+            mode: 0755
+- name: install web server volumes
+  hosts: web
+  remote_user: root
+  tasks:
+      - name: set up redis-tunnel user
+        user:
+            name: redis-tunnel
+            state: present
+            shell: /bin/false
+      - name: set up redis openssh-client tunnel authorized key
+        authorized_key:
+            user: redis-tunnel
+            state: present
+            key: "{{ lookup('file', '../openssh-client/id_rsa.pub') }}"
+            key_options: "permitopen=\"127.0.0.1:6379\",no-agent-forwarding,no-pty,no-X11-forwarding"
+      - name: create /opt/volumes/certbot
+        file:
+            path: /opt/volumes/certbot
+            state: directory
+            mode: 0755
+      - name: create /opt/volumes/certbot/letsencrypt
+        file:
+            path: /opt/volumes/certbot/letsencrypt
+            state: directory
+            mode: 0755
+      - name: create /opt/volumes/certbot/webroot
+        file:
+            path: /opt/volumes/certbot/webroot
+            state: directory
+            mode: 0755
+      - name: create /opt/volumes/forum
+        file:
+            path: /opt/volumes/forum
+            state: directory
+            mode: 0755
+      - name: create /opt/volumes/forum/static
+        file:
+            path: /opt/volumes/forum/static
+            state: directory
+            mode: 0755
+            owner: 1000
+            group: 1000
+      - name: create /opt/volumes/forum/media
+        file:
+            path: /opt/volumes/forum/media
+            state: directory
+            mode: 0755
+            owner: 1000
+            group: 1000
+      - name: create /opt/volumes/forum/media/djangobb_forum/avatars
+        file:
+            path: /opt/volumes/forum/media/djangobb_forum/avatars
+            state: directory
+            mode: 0755
+            owner: 1000
+            group: 1000
+      - name: create /opt/volumes/forum/media/djangobb_forum/attachments
+        file:
+            path: /opt/volumes/forum/media/djangobb_forum/attachments
+            state: directory
+            mode: 0755
+            owner: 1000
+            group: 1000
+      - name: create /opt/volumes/forum/djangobb_index
+        file:
+            path: /opt/volumes/forum/djangobb_index
+            state: directory
+            mode: 0755
+            owner: 1000
+            group: 1000
+      - name: create /opt/volumes/website
+        file:
+            path: /opt/volumes/website
+            state: directory
+            mode: 0755
+      - name: create /opt/volumes/website/custom-static
+        file:
+            path: /opt/volumes/website/custom-static
+            state: directory
+            mode: 0755
+            owner: 1000
+            group: 1000
+      - name: create /opt/volumes/website/static
+        file:
+            path: /opt/volumes/website/static
+            state: directory
+            mode: 0755
+            owner: 1000
+            group: 1000
+- name: set up jam servers
+  hosts: jam
+  remote_user: root
+  tasks:
+      - name: create /opt/volumes/openssh-client
+        file:
+            path: /opt/volumes/openssh-client
+            state: directory
+            mode: 0755
+            owner: 1000
+            group: 1000
+      - name: set up openssh-client private key
+        synchronize:
+            src: ../openssh-client/id_rsa
+            dest: /opt/volumes/openssh-client/id_rsa
+      - name: set openssh-client private key permissions
+        file:
+            path: /opt/volumes/openssh-client/id_rsa
+            mode: 0600
+      - name: create /opt/volumes/session-archive
+        file:
+            path: /opt/volumes/session-archive
+            state: directory
+            mode: 0755
+            owner: 1000
+            group: 1000

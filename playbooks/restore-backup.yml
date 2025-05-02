@@ -1,0 +1,77 @@
+---
+- name: restore backup
+  hosts: docker
+  remote_user: root
+  vars_files:
+      - global_vars.yml
+  tasks:
+      - name: stop website container
+        docker_container:
+            name: website
+            state: stopped
+
+      - name: stop forum container
+        docker_container:
+            name: forum
+            state: stopped
+
+      - name: stop postgres container
+        docker_container:
+            name: postgres
+            state: stopped
+
+      - name: delete old database
+        file:
+            path: /opt/volumes/postgres/
+            state: absent
+
+      - name: start postgres container
+        docker_container:
+            name: postgres
+            state: started
+
+      - name: copy database dump onto host
+        copy:
+            src: "{{ db_dump_path }}"
+            dest: /tmp/dbdump
+
+      - name: copy database dump into container
+        command: docker cp /tmp/dbdump postgres:/tmp/
+
+      - name: remove remote database dump from host
+        file:
+            path: /tmp/dbdump
+            state: absent
+
+      - name: wait for postgres
+        command: docker exec postgres bash -c "until psql -U {{ postgres_user }} -l >/dev/null 2>/dev/null; do sleep 1; done"
+
+      - name: create postgres superuser
+        command: docker exec postgres createuser -U {{ postgres_user }} -s postgres
+        ignore_errors: yes
+
+      - name: restore database
+        command: docker exec postgres pg_restore -U {{ postgres_user }} -d {{ postgres_user }} /tmp/dbdump
+
+      - name: remove remote database dump from container
+        command: docker exec postgres rm /tmp/dbdump
+
+      - name: start forum container
+        docker_container:
+            name: forum
+            state: started
+
+      - name: start website container
+        docker_container:
+            name: website
+            state: started
+
+      - name: reload nginx-https
+        command: docker exec nginx-https nginx -s reload
+  vars:
+    # docker-py is installed in virtualenv
+    ansible_python_interpreter: /opt/ansible_env/bin/python
+  vars_prompt:
+      - name: "db_dump_path"
+        prompt: "Local absolute path to database dump"
+        private: no

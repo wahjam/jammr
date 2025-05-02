@@ -1,0 +1,10 @@
+{% extends "emails/base.txt" %}
+{% block body %}
+Thank you for signing up to jammr!  You are almost ready to jam together
+online.
+
+Please confirm your email address by visiting this link and logging in:
+https://{{ site.domain }}/register/activate/{{ activation_key }}
+
+This link is valid for {{ expiration_days }} days.
+{% endblock %}

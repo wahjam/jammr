@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block title %}Cancelation in progress | jammr{% endblock %}
+
+{% block content %}
+<section class="page_title">
+    <h1>Cancelation in progress</h1>
+    <h2>Your subscription renewal is being canceled</h2>
+</section><!-- /.page_title -->
+
+<section class="full_width">
+    <section class="two_sixth"></section>
+    <section class="two_sixth">
+        <p>Your subscription renewal is being canceled and you will receive an email confirmation to {{ user.email }}. You can continue <a href="{% url 'profiles_edit_profile' %}">editing your profile here</a>.</p>
+    </section>
+    <section class="two_sixth"></section>
+</section>
+{% endblock content %}

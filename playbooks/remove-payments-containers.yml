@@ -1,0 +1,24 @@
+---
+# This playbook stops and delete payments-related containers
+- name: remove payments containers
+  hosts: web
+  remote_user: root
+  tasks:
+      - name: remove stripe-webhook container
+        docker_container:
+            name: stripe-webhook
+            state: absent
+
+      - name: remove apply_tax_rate_changes container
+        docker_container:
+            name: apply_tax_rate_changes
+            state: absent
+
+      - name: remove stripe-cli container
+        when: stripe_cli_enabled
+        docker_container:
+            name: stripe-cli
+            state: absent
+  vars:
+    # docker-py is installed in virtualenv
+    ansible_python_interpreter: /opt/ansible_env/bin/python

@@ -1,0 +1,7 @@
+{
+    "tracks": {
+        "channel0": ["../recorded-jams/drumloop.ogg"]
+    },
+    "bpm": 120,
+    "bpi": 16
+}

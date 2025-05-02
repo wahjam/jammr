@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+
+{% load payments %}
+
+{% block title %}Manage subscription | jammr{% endblock %}
+
+{% block content %}
+<section class="page_title">
+    <h1>Manage subscription</h1>
+    <h2>Your subscription settings</h2>
+</section><!-- /.page_title -->
+<section class="full_width">
+    <section class="three_fourth content-left">
+
+    <section class="content_heading">
+        <a class="gotop" href="#"></a>
+        <h3>Status</h3>
+    </section>
+
+    {% if subscription and subscription.active and subscription.canceled %}
+    <p>Your subscription ends on {{ subscription.expires|date:"F jS Y" }} and you will not be charged further.</p>
+    {% elif subscription and subscription.active %}
+    <p>You are paying {{ subscription.plan.currency|currency_symbol }}{{ subscription.plan.amount }} per month and the current billing period runs until {{ subscription.expires|date:"F jS Y" }}.</p>
+    {% endif %}
+
+    {% if object_list %}
+    <p>Payment history:</p>
+    <p>
+        {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}">&lt; Previous</a>
+        {% endif %}
+        {% for pageno in paginator.page_range %}
+            {% if pageno == page_obj.number %}
+                <strong>{{ pageno }}</strong>
+            {% else %}
+                <a href="?page={{ pageno }}">{{ pageno }}</a>
+            {% endif %}
+        {% endfor %}
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">Next &gt;</a>
+        {% endif %}
+    </p>
+    <table>
+        <tr><th>Number</th><th>Date</th><th>Amount</th><th>Status</th></tr>
+        {% for invoice in object_list %}
+        <tr>
+            <td>{{ invoice.seq_num }}</td>
+            <td>{{ invoice.date|date:"F jS Y" }}</td>
+            <td>{{ invoice.currency|currency_symbol }}{{ invoice.amount }}</td>
+            <td>{% if invoice.refunded %}Refunded{% elif invoice.paid %}Paid{% else %}Unpaid{% endif %}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    <p>
+        {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}">&lt; Previous</a>
+        {% endif %}
+        {% for pageno in paginator.page_range %}
+            {% if pageno == page_obj.number %}
+                <strong>{{ pageno }}</strong>
+            {% else %}
+                <a href="?page={{ pageno }}">{{ pageno }}</a>
+            {% endif %}
+        {% endfor %}
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">Next &gt;</a>
+        {% endif %}
+    </p>
+    {% endif %}
+
+    {% if subscription and subscription.active and not subscription.canceled %}
+    <section class="content_heading">
+        <a class="gotop" href="#"></a>
+        <h3>Update payment details</h3>
+    </section>
+
+    <p>The credit card number you are currently paying with ends with {{ subscription.get_card_last4 }}.</p>
+
+    <p>You can change credit cards in case your card is expiring or you have changed banks.</p>
+
+    <a href="{% url 'payments-update' %}" class="button gray"><span>Update payment details</span></a>
+    {% endif %}
+
+    {% if subscription and subscription.active and not subscription.canceled %}
+    <section class="content_heading">
+        <a class="gotop" href="#"></a>
+        <h3>Cancel subscription renewal</h3>
+    </section>
+
+    <p>If you cancel, your subscription remain active until {{ subscription.expires|date:"F jS Y" }}.</p>
+
+    <form action="{% url 'payments-cancel-renewal' %}" method="post">
+        {% csrf_token %}
+        <input type="submit" value="Cancel renewal"></input>
+    </form>
+    {% endif %}
+
+    </section><!-- /.three_fourth content-->
+    <section class="one_fourth last">
+
+        <section class="widget">
+            <h3>Edit your profile</h3>
+            <p>You can edit your profile to customize your settings.</p>
+            <a href="{% url 'profiles_edit_profile' %}" class="button orange"><span>Edit profile</span></a>
+        </section><!-- /.widget -->
+
+    </section><!-- /.one_fourth -->
+
+</section>
+{% endblock content %}

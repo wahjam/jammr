@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block title %}Recorded jams | jammr{% endblock %}
+
+{% block content %}
+<section class="page_title">
+    <h1>Recorded jams</h1>
+    <h2>Find your recorded jams</h2>
+</section><!-- /.page_title -->
+
+<section class="full_width">
+    <div class="recordedjam_list_search">
+        <form method="get">
+            <label for="username">Search by user:</label>
+            <input name="username" type="text" />
+            <input type="submit" value="Go" />
+        </form>
+    </div>
+    {% if username %}
+        <h3>Search results for username "{{ username }}"</h3>
+        <p><a href="{% url 'recorded_jam_list_view' %}">Reset search</a></p>
+    {% endif %}
+    <p>
+        {% if page_obj.has_previous %}
+            <a href="?{{ get_params }}page={{ page_obj.previous_page_number }}">&lt; Previous</a>
+        {% endif %}
+        {% for pageno in paginator.page_range %}
+            {% if pageno == page_obj.number %}
+                <strong>{{ pageno }}</strong>
+            {% else %}
+                <a href="?{{ get_params }}page={{ pageno }}">{{ pageno }}</a>
+            {% endif %}
+        {% endfor %}
+        {% if page_obj.has_next %}
+            <a href="?{{ get_params }}page={{ page_obj.next_page_number }}">Next &gt;</a>
+        {% endif %}
+    </p>
+    <table>
+        <tr><th>Date</th><th>Users</th></tr>
+        {% for jam in object_list %}
+        <tr>
+            <td><a href="{{ jam.get_absolute_url }}">{{ jam.start_date|date:"D F j, Y, H:i e" }}</a></td>
+            <td>
+                {% for user in jam.users.all %}
+                    {{ user.username }}
+                {% endfor %}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+    <p>
+        {% if page_obj.has_previous %}
+            <a href="?{{ get_params }}page={{ page_obj.previous_page_number }}">&lt; Previous</a>
+        {% endif %}
+        {% for pageno in paginator.page_range %}
+            {% if pageno == page_obj.number %}
+                <strong>{{ pageno }}</strong>
+            {% else %}
+                <a href="?{{ get_params }}page={{ pageno }}">{{ pageno }}</a>
+            {% endif %}
+        {% endfor %}
+        {% if page_obj.has_next %}
+            <a href="?{{ get_params }}page={{ page_obj.next_page_number }}">Next &gt;</a>
+        {% endif %}
+    </p>
+</section><!-- /.full_width -->
+{% endblock content %}

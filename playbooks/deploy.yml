@@ -1,0 +1,439 @@
+---
+- name: gather facts from web hosts (regardless of limit)
+  hosts: all
+  remote_user: root
+  tasks:
+    - name: Gather facts from ALL hosts (regardless of limit or tags)
+      setup:
+      delegate_to: "{{ item }}"
+      delegate_facts: True
+      when: hostvars[item]['ansible_default_ipv4'] is not defined
+      with_items: "{{ groups['web'] }}"
+- name: start docker network
+  hosts: docker
+  remote_user: root
+  vars_files:
+      - global_vars.yml
+  tasks:
+      - name: define docker networks
+        docker_network:
+            # TODO isolated networks for containers that don't need external
+            # connectivity
+            name: net-user
+            driver: bridge
+            state: present
+  vars:
+    # docker-py is installed in virtualenv
+    ansible_python_interpreter: /opt/ansible_env/bin/python
+- name: start web containers
+  hosts: web
+  remote_user: root
+  vars_files:
+      - global_vars.yml
+  tasks:
+      - name: start exim4 container
+        docker_container:
+            name: exim4
+            state: started
+            image: exim4
+            restart_policy: unless-stopped
+            networks:
+                - name: net-user
+            purge_networks: True
+            log_driver: json-file
+            log_options:
+                max-size: 40m
+                max-file: "5"
+
+      - name: update nginx configuration
+        synchronize:
+            src: ../nginx/
+            dest: /opt/volumes/nginx/
+            rsync_opts:
+                - "--exclude=*.j2"
+      - name: expand nginx http configuration templates
+        template:
+            src: "../nginx/conf-http.d/{{ item }}.j2"
+            dest: "/opt/volumes/nginx/conf-http.d/{{ item }}"
+            owner: "1000"
+            group: "1000"
+            mode: 0664
+        with_items:
+            - 00_global.conf
+            - forum.conf
+            - website.conf
+      - name: expand nginx https configuration templates
+        template:
+            src: "../nginx/conf-https.d/{{ item }}.j2"
+            dest: "/opt/volumes/nginx/conf-https.d/{{ item }}"
+            owner: "1000"
+            group: "1000"
+            mode: 0664
+        with_items:
+            - 00_global.conf
+            - forum.conf
+            - website.conf
+
+      - name: start nginx http container
+        docker_container:
+            name: nginx-http
+            state: started
+            image: nginx:1.25.3-alpine
+            published_ports:
+                - "{{ nginx_http_published_ports }}"
+            restart_policy: unless-stopped
+            networks:
+                - name: net-user
+            purge_networks: True
+            log_driver: json-file
+            log_options:
+                max-size: 20m
+                max-file: "5"
+            volumes:
+                - /opt/volumes/nginx/conf-http.d:/etc/nginx/conf.d:ro
+                - /opt/volumes/nginx/proxy_params:/etc/nginx/proxy_params:ro
+                - /opt/volumes/nginx/fastcgi_params:/etc/nginx/fastcgi_params:ro
+                - /opt/volumes/certbot/webroot:/usr/share/certbot-webroot:ro
+
+      - name: start certbot container
+        when: certbot_enabled
+        docker_container:
+            name: certbot
+            state: started
+            image: certbot
+            restart_policy: unless-stopped
+            networks:
+                - name: net-user
+            purge_networks: True
+            log_driver: json-file
+            log_options:
+                max-size: 20m
+                max-file: "5"
+            volumes:
+                - /opt/volumes/certbot/letsencrypt:/etc/letsencrypt
+                - /opt/volumes/certbot/webroot:/var/www/certbot-webroot
+                - /var/run/docker.sock:/var/run/docker.sock
+            env:
+                NGINX_CONTAINER_NAME: nginx-https
+                EMAIL: "info@{{ domain }}"
+                DOMAINS: "{{ domain }},forum.{{ domain }},munin.{{ domain }},www.{{ domain }}"
+                STAGING: "{{ certbot_staging | string }}"
+
+      - name: start redis container
+        docker_container:
+            name: redis
+            state: started
+            image: redis:3.2-alpine
+            command: redis-server --appendonly yes
+            restart_policy: unless-stopped
+            networks:
+                - name: net-user
+            purge_networks: True
+            log_driver: json-file
+            log_options:
+                max-size: 20m
+                max-file: "5"
+            published_ports: ["127.0.0.1:6379:6379"]
+            volumes:
+                - /opt/volumes/redis:/data
+
+      - name: start postgres container
+        docker_container:
+            name: postgres
+            state: started
+            image: postgres:9.6-alpine
+            restart_policy: unless-stopped
+            networks:
+                - name: net-user
+            purge_networks: True
+            log_driver: json-file
+            log_options:
+                max-size: 20m
+                max-file: "5"
+            volumes:
+                - /opt/volumes/postgres:/var/lib/postgresql/data
+            env:
+                POSTGRES_USER: "{{ postgres_user }}"
+                POSTGRES_PASSWORD: "{{ postgres_password }}"
+                POSTGRES_DB: "{{ postgres_user }}"
+
+      - name: start forum container
+        docker_container:
+            name: forum
+            state: started
+            image: webapp:latest
+            restart_policy: unless-stopped
+            networks:
+                - name: net-user
+            purge_networks: True
+            log_driver: json-file
+            log_options:
+                max-size: 20m
+                max-file: "5"
+            command: forum
+            env:
+                EXTERNAL_HOSTNAME: "{{ domain }}"
+                POSTGRES_PASSWORD: "{{ postgres_password }}"
+                RECAPTCHA_SECRET: "{{ recaptcha_secret }}"
+                RECAPTCHA_SITE_KEY: "{{ recaptcha_site_key }}"
+                SEND_EMAIL: "{{ webapp_send_email | string }}"
+                DJANGO_SECRET_KEY: "{{ webapp_secret_key }}"
+            volumes:
+                - /opt/volumes/forum/static:/home/webapp/forum/static
+                - /opt/volumes/forum/media:/home/webapp/forum/media
+                - /opt/volumes/forum/djangobb_index:/home/webapp/forum/djangobb_index
+
+      - name: start website container
+        docker_container:
+            name: website
+            state: started
+            image: webapp:latest
+            restart_policy: unless-stopped
+            networks:
+                - name: net-user
+            purge_networks: True
+            log_driver: json-file
+            log_options:
+                max-size: 40m
+                max-file: "5"
+            command: website
+            env:
+                EXTERNAL_HOSTNAME: "{{ domain }}"
+                POSTGRES_PASSWORD: "{{ postgres_password }}"
+                RECAPTCHA_SECRET: "{{ recaptcha_secret }}"
+                RECAPTCHA_SITE_KEY: "{{ recaptcha_site_key }}"
+                SEND_EMAIL: "{{ webapp_send_email | string }}"
+                DJANGO_SECRET_KEY: "{{ webapp_secret_key }}"
+            volumes:
+                - /opt/volumes/website/static:/home/webapp/website/static
+                - /opt/volumes/website/custom-static:/home/webapp/website/custom-static
+
+      - name: start clear_sessions container
+        docker_container:
+            name: clear_sessions
+            state: started
+            image: webapp:latest
+            restart_policy: unless-stopped
+            networks:
+                - name: net-user
+            purge_networks: True
+            log_driver: json-file
+            log_options:
+                max-size: 1m
+                max-file: "5"
+            command: clear_sessions
+            env:
+                EXTERNAL_HOSTNAME: "{{ domain }}"
+                POSTGRES_PASSWORD: "{{ postgres_password }}"
+                RECAPTCHA_SECRET: "{{ recaptcha_secret }}"
+                RECAPTCHA_SITE_KEY: "{{ recaptcha_site_key }}"
+                SEND_EMAIL: "{{ webapp_send_email | string }}"
+                DJANGO_SECRET_KEY: "{{ webapp_secret_key }}"
+
+      - name: start send_forum_notifications container
+        docker_container:
+            name: send_forum_notifications
+            state: started
+            image: webapp:latest
+            restart_policy: unless-stopped
+            networks:
+                - name: net-user
+            purge_networks: True
+            log_driver: json-file
+            log_options:
+                max-size: 20m
+                max-file: "5"
+            command: send_forum_notifications
+            env:
+                EXTERNAL_HOSTNAME: "{{ domain }}"
+                POSTGRES_PASSWORD: "{{ postgres_password }}"
+                RECAPTCHA_SECRET: "{{ recaptcha_secret }}"
+                RECAPTCHA_SITE_KEY: "{{ recaptcha_site_key }}"
+                SEND_EMAIL: "{{ webapp_send_email | string }}"
+                DJANGO_SECRET_KEY: "{{ webapp_secret_key }}"
+
+      - name: start or restart nginx container
+        docker_container:
+            name: nginx-https
+            state: started
+            image: nginx:1.25.3-alpine
+            published_ports:
+                - "{{ nginx_https_published_ports }}"
+            restart_policy: unless-stopped
+            restart: yes
+            networks:
+                - name: net-user
+                  aliases: "{{ nginx_https_network_aliases }}"
+            purge_networks: True
+            log_driver: json-file
+            log_options:
+                max-size: 40m
+                max-file: "5"
+            volumes:
+                - /opt/volumes/nginx/conf-https.d:/etc/nginx/conf.d:ro
+                - "/opt/volumes/nginx/jammr.net-{{ inventory_name }}.crt:/etc/nginx/jammr.net.crt:ro"
+                - "/opt/volumes/nginx/jammr.net-{{ inventory_name }}.key:/etc/nginx/jammr.net.key:ro"
+                - /opt/volumes/nginx/proxy_params:/etc/nginx/proxy_params:ro
+                - /opt/volumes/nginx/fastcgi_params:/etc/nginx/fastcgi_params:ro
+                - "/opt/volumes/nginx/acl-{{ inventory_name }}:/etc/nginx/acl:ro"
+                - /opt/volumes/forum/static:/usr/share/forum/static:ro
+                - /opt/volumes/forum/media:/usr/share/forum/media:ro
+                - /opt/volumes/website/static:/usr/share/website/static:ro
+                - /opt/volumes/certbot/letsencrypt:/etc/letsencrypt:ro
+  vars:
+    # docker-py is installed in virtualenv
+    ansible_python_interpreter: /opt/ansible_env/bin/python
+- name: start jam containers
+  hosts: jam
+  remote_user: root
+  vars_files:
+      - global_vars.yml
+  tasks:
+      # TODO does jamd stop popping jams when at max capacity?
+      - name: start redis tunnel container
+        # The web server runs Redis and doesn't need the ssh tunnel
+        when: inventory_hostname not in groups['web']
+        docker_container:
+            name: redis
+            state: started
+            image: openssh-client:latest
+            restart_policy: unless-stopped
+            networks:
+                - name: net-user
+            purge_networks: True
+            log_driver: json-file
+            log_options:
+                max-size: 20m
+                max-file: "5"
+            command: ["-NL", "*:6379:127.0.0.1:6379", "-l", "redis-tunnel", "-o", "StrictHostKeyChecking=accept-new", "{{ domain }}"]
+            volumes:
+                - /opt/volumes/openssh-client/id_rsa:/home/user/.ssh/id_rsa
+            etc_hosts: |
+                {{
+                    {
+                        domain: hostvars[groups['web'][0]]['ansible_facts']['default_ipv4']['address']
+                    }
+                }}
+
+      - name: start recorded-jams container
+        docker_container:
+            name: recorded-jams
+            state: started
+            image: recorded-jams:latest
+            restart_policy: unless-stopped
+            networks:
+                - name: net-user
+            purge_networks: True
+            log_driver: json-file
+            log_options:
+                max-size: 20m
+                max-file: "5"
+            env:
+                EXTERNAL_HOSTNAME: "{{ external_hostname }}"
+                MAX_PROCESSES: "{{ recorded_jams_max_processes | string }}"
+                JAMMR_API_PASSWORD: "{{ recorded_jams_password }}"
+                S3_ACCESS_KEY: "{{ s3_access_key }}"
+                S3_SECRET_KEY: "{{ s3_secret_key }}"
+            volumes:
+                - /opt/volumes/session-archive:/tmp/session-archive
+            etc_hosts: |
+                {{
+                    {
+                        domain: hostvars[groups['web'][0]]['ansible_facts']['default_ipv4']['address']
+                    }
+                }}
+
+      - name: start jamd container
+        docker_container:
+            name: jamd
+            state: started
+            image: jamd:latest
+            published_ports:
+                # docker_container doesn't support port ranges here!
+                - 10100:10100
+                - 10101:10101
+                - 10102:10102
+                - 10103:10103
+                - 10104:10104
+                - 10105:10105
+                - 10106:10106
+                - 10107:10107
+                - 10108:10108
+                - 10109:10109
+                - 10110:10110
+                - 10111:10111
+                - 10112:10112
+                - 10113:10113
+                - 10114:10114
+                - 10115:10115
+                - 10116:10116
+                - 10117:10117
+                - 10118:10118
+                - 10119:10119
+                - 10120:10120
+                - 10121:10121
+                - 10122:10122
+                - 10123:10123
+                - 10124:10124
+                - 10125:10125
+                - 10126:10126
+                - 10127:10127
+                - 10128:10128
+                - 10129:10129
+                - 10130:10130
+                - 10131:10131
+                - 10132:10132
+                - 10133:10133
+                - 10134:10134
+                - 10135:10135
+                - 10136:10136
+                - 10137:10137
+                - 10138:10138
+                - 10139:10139
+                - 10140:10140
+                - 10141:10141
+                - 10142:10142
+                - 10143:10143
+                - 10144:10144
+                - 10145:10145
+                - 10146:10146
+                - 10147:10147
+                - 10148:10148
+                - 10149:10149
+                - 10150:10150
+                - 10151:10151
+                - 10152:10152
+                - 10153:10153
+                - 10154:10154
+                - 10155:10155
+                - 10156:10156
+                - 10157:10157
+                - 10158:10158
+                - 10159:10159
+                - 10160:10160
+                - 10161:10161
+                - 10162:10162
+                - 10163:10163
+            restart_policy: unless-stopped
+            networks:
+                - name: net-user
+            purge_networks: True
+            log_driver: json-file
+            log_options:
+                max-size: 20m
+                max-file: "5"
+            env:
+                JAMMR_API_PASSWORD: "{{ wahjamsrv_password }}"
+                EXTERNAL_HOSTNAME: "{{ external_hostname }}"
+                MAX_JAMS: "{{ jamd_max_jams | string }}"
+            volumes:
+                - /opt/volumes/session-archive:/tmp/session-archive
+            etc_hosts: |
+                {{
+                    {
+                        domain: hostvars[groups['web'][0]]['ansible_facts']['default_ipv4']['address']
+                    }
+                }}
+  vars:
+    # docker-py is installed in virtualenv
+    ansible_python_interpreter: /opt/ansible_env/bin/python

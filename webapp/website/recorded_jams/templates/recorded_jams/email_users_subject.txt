@@ -1,0 +1,1 @@
+{{ user.username }}, listen to your jam from {{ jam.start_date|date:"D M j, H:i e" }}

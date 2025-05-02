@@ -1,0 +1,26 @@
+server {
+	listen		443 ssl;
+	server_name	munin.{{ domain }};
+	auth_basic "Restricted";
+	auth_basic_user_file /etc/nginx/htpasswd-munin;
+
+	include acl;
+
+	location ^~ /munin-cgi/munin-cgi-graph/ {
+		fastcgi_split_path_info ^(/munin-cgi/munin-cgi-graph)(.*);
+		fastcgi_param PATH_INFO $fastcgi_path_info;
+		fastcgi_pass munin:9001;
+		include fastcgi_params;
+	}
+
+	location /munin/ {
+		fastcgi_split_path_info ^(/munin-cgi)(.*);
+		fastcgi_param PATH_INFO $fastcgi_path_info;
+		fastcgi_pass munin:9000;
+		include fastcgi_params;
+	}
+
+	location / {
+		rewrite ^/$ munin/ redirect; break;
+	}
+}

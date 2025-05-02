@@ -1,0 +1,5 @@
+#!/bin/bash
+# Copyright (C) 2019 Stefan Hajnoczi <stefanha@gmail.com>
+
+# TODO backup persistent volumes (e.g. forum avatars and uploads)
+exec docker exec postgres pg_dump -Fc -U "{{ postgres_user }}"

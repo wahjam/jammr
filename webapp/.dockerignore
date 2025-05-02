@@ -1,0 +1,17 @@
+# Ignore everything...
+**/*
+
+# ...except
+!common/
+!djangobb_forum/
+!forum/
+!pagination/
+!pip-pkgs/
+!website/
+!apply_tax_rate_changes.py
+!manage-forum.py
+!manage-website.py
+!clear_sessions.py
+!docker-entrypoint.sh
+!gunicorn-*.conf
+!send_forum_notifications.py

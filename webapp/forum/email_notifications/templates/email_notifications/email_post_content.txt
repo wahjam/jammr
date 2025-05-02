@@ -1,0 +1,6 @@
+{% for t in topics %}
+{{ forloop.counter }}. {{ t.0.topic.name|safe }}
+by {{ t.1|join:", " }}
+https://{{ site.domain }}{{ t.0.get_absolute_url }}
+
+{% endfor %}

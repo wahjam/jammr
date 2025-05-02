@@ -1,0 +1,53 @@
+Quickstart
+----------
+To set up a development environment, create a new virtual machine called
+'dev1.jammr.net' running Debian stable:
+
+  virt-install --name dev1.jammr.net --memory 1024 --cpu host \
+      --location https://ftp.debian.org/debian/dists/buster/main/installer-amd64/ \
+      --os-variant=debian10 \
+      --disk size=20,cache=none
+
+Set the hostname to 'dev1.jammr.net' and ensure that openssh-server will be
+installed.  Complete the installation and start the virtual machine.
+
+Add your ssh key to access root@dev1.jammr.net:
+
+  (dev1.jammr.net)# mkdir .ssh
+  (dev1.jammr.net)# cat >.ssh/authorized_keys
+  ...your ssh public key here...
+  ^D
+  (dev1.jammr.net)# chmod 700 .ssh && chmod 600 .ssh/authorized_keys
+
+Set up Ansible in a virtual environment. Installing a specific Ansible version
+ensures that updates to the system Ansible (if it's installed) don't break the
+playbooks:
+
+  (local)$ python -m venv .
+  (local)$ bin/pip install ansible==5.9.0 docker==6.0.0 requests==2.28.1
+
+Run the 'host-setup' Ansible playbook:
+
+  (local)$ make host-setup
+
+Build the 'webapp' Docker image:
+
+  (local)$ make webapp
+
+Deploy containers from the latest images:
+
+  (local)$ make deploy
+
+Backup
+------
+
+Monitoring
+----------
+Munin is used for monitoring because it is a simple all-in-one data collection
+and graphing system.  It is also easy to write new plugins to collect metrics.
+
+More modern monitoring systems scale better but are more complex.  In order to
+scale to many nodes and many metrics they involve many different components and
+have requirements like databases.  They also tend to be modular to the point of
+not offering a single system that collects and graphs out of the box.  They are
+a poor fit for deployment with a low number of nodes and few metrics.

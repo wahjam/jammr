@@ -1,0 +1,35 @@
+{% extends "emails/base.txt" %}
+{% load payments %}
+{% block body %}
+Invoice from jammr ltd
+Email: info@jammr.net
+Website: https://jammr.net/
+VAT number: GB347065495
+{% if billing_details %}
+Customer name: {{ billing_details.name }}
+Customer email: {{ billing_details.email }}
+Customer address: {{ billing_details.address.line1 }}{% if billing_details.address.line2 %}, {{ billing_details.address.line2 }}{% endif %}
+{{ billing_details.address.city }}{% if billing_details.address.state %}, {{ billing_details.address.state }}{% endif %}{%if billing_details.address.postal_code %}, {{ billing_details.address.postal_code }}{% endif %}
+{{ billing_details.address.country }}
+{% endif %}
+Account username: {{ user.username }}
+Account email address: {{ user.email }}
+Invoice number: {{ invoice.seq_num }}
+Date: {{ invoice.date|date:"F jS Y" }}
+
+  Item: jammr Premium, Quantity: 1, Price: {{ invoice.currency|currency_symbol }}{{ pre_tax_amount }}
+  ---
+  Subtotal: {{ invoice.currency|currency_symbol }}{{ pre_tax_amount }}
+  VAT ({% if invoice.tax_country %}for {{ invoice.tax_country }} {% endif %}at {{ invoice.tax_percentage }}%): {{ invoice.currency|currency_symbol }}{{ tax_amount }}
+  ---
+  Total: {{ invoice.currency|currency_symbol }}{{ invoice.amount }}
+{% if invoice.amount == 0 %}
+You are currently in the free trial period until {{ subscription.expires|date:"F jS Y" }} and
+will be charged {{ invoice.currency|currency_symbol }}{{ subscription.plan.amount }} monthly afterwards.  You can cancel your subscription any time at
+https://{{ domain }}{% url 'payments-manage' %}.
+{% else %}
+The credit card you subscribed with has been charged.  Manage your jammr
+premium subscription at https://{{ domain }}{% url 'payments-manage' %}.
+{% endif %}
+If you have any questions, please contact info@jammr.net.
+{% endblock %}

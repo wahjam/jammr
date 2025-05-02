@@ -1,0 +1,43 @@
+{% extends "emails/base.txt" %}
+{% block body %}
+Hi {{user.username}},
+Sad news! jammr will shut down on April 30th, 2025. This email explains what
+will happen and why jammr is shutting down.
+
+After April 30th, 2025 the jammr application and the website, including forum,
+user account pages, and recorded jams, will cease to operate. It will not be
+possible to jam using the application anymore.
+
+Premium subscriptions will not be charged after January 31st, 2025. If you had
+a subscription, your Premium features will remain active for free until
+shutdown as a thank you for your support.
+
+What steps should I take?
+
+1. Download any recorded jams you'd like to save from
+   https://jammr.net/recorded-jams/ before April 30th, 2025.
+2. Discuss alternative online jamming platforms where you will migrate with
+   your jamming buddies. You can do this on the https://forum.jammr.net/, on
+   the https://discord.gg/xnywFszu, or in the chat during a jam session.
+3. After jammr shuts down, uninstall the jammr application from your computer.
+
+Why is jammr shutting down?
+
+I've had the pleasure of jamming with some of you for many years and want to
+express my apologies for disrupting your online jamming and the community that
+has grown. I started building jammr over 12 years ago and have run it mostly by
+myself throughout its lifetime. In recent years it's been a struggle to keep on
+top of the operational tasks while also making progress towards the vision of
+an online jamming platform that I had in mind all those years ago. Providing
+the level of service that users deserve requires more time than I have
+available. Having considered the options, I have decided to shut down jammr in
+an orderly fashion instead of letting it fall into disrepair.
+
+A heartfelt thank you to you for using jammr!
+
+Stefan, founder at jammr ltd
+
+PS: You can reply to this email if you have any questions.
+
+{% endblock %}
+

@@ -1,0 +1,12 @@
+server {
+	listen	  80;
+	server_name munin.{{ domain }};
+
+	location /.well-known/ {
+		root /usr/share/certbot-webroot;
+	}
+
+	location / {
+		return 403;
+	}
+}

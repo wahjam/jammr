@@ -1,0 +1,15 @@
+server {
+	listen          443 ssl;
+	server_name     {{ domain }};
+
+	include acl;
+
+	location        / {
+		include proxy_params;
+		proxy_pass http://website:8000;
+	}
+
+	location ~ ^/static/ {
+		root /usr/share/website;
+	}
+}

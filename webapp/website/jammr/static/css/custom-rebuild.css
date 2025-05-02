@@ -1,0 +1,155 @@
+/*+++++++++++++++++++++++++++++++++++++++++++++++
+++++++++  YOUR CUSTOM STYLESHEET  +++++++++++++++++++++
+++++++++++++++++++++++++++++++++++++++++++++++++
+
+HOW TO USE THIS FILE:
+	Simply copy an existing style from the rebuild.css file to this one and 
+	modify however you like. It will override the default style.
+
+WHY USE THIS FILE:
+	Adding your custom CSS here will make it much easier to upgrade to a 
+	newer version of this theme without losing any of your customizations.
+	
+/*+++++++++++++++++++++++++++++++++++++++++++++++
+++++++++  ADD YOUR CUSTOM CSS BELOW THIS LINE   ++++++++++++
++++++++++++++++++++++++++++++++++++++++++++++++*/
+
+.strap_box p { color:#797979; }
+
+a, h1 a, h2 a, h3 a, h4 a, h15 a, h6 a {
+    color: #1b3cdd;
+}
+
+nav .nav_fix_in .buynow {
+    background: #f16621;
+    color: #000000;
+}
+
+.contact_detail, .contact_detail a, .contact_detail a:hover {
+    color: #000000;
+}
+
+.social_links a.youtube { background:0 0 no-repeat url('../images/social/youtube.png');}
+.social_links a.soundcloud { background:0 0 no-repeat url('../images/social/soundcloud.png');}
+
+ul.errorlist {
+    display: block;
+    background: url("../images/icons/error.png") no-repeat scroll 19px 50%  #FFD2D3;
+    border: 1px solid #D05A5C;
+    color: #DF8F90;
+    margin-bottom: 20px;
+    padding: 14px 10px 14px 67px;
+	border-left-width:10px;
+	border-radius:  5px;
+	-moz-border-radius: 5px;
+	-webkit-border-radius:  5px;
+}
+ul.errorlist li {
+    background: 0px 4px no-repeat url('../images/arrow-red.png');
+    color: #46433C;
+}
+
+/* Center team profile pictures */
+.team_box img { margin-left: auto; margin-right: auto; }
+
+/* Solid background color instead of diagonal lines image */
+body { background: #32373d }
+
+/* Empty profile fields have a default message that should be in italic */
+.missing_info { font-style: italic; }
+
+/* Reset jQuery UI class where theme puts a duplicate arrow image */
+.ui-accordion .ui-accordion-header { background: none; }
+
+/* Reset tick image for .ui-complete ul li */
+ul.ui-autocomplete li { background-image: none; }
+
+/* Make .tagit ul background white */
+ul.tagit { background: white; }
+ul.tagit li { background-image: none; }
+li.tagit-new input { background: #fff; }
+
+/* Remove padding at top of navigation bar to free up screen space */
+nav { padding: 0 }
+
+/* Free up screen space between header and navigation bar */
+header, .header_fix, .logo { height: 50px }
+
+/* Remove double margin-bottom from banner table */
+#banner-container .text_box table.invisible_table {
+    margin-bottom: 0
+}
+
+/* Remove padding from feature boxes */
+section.feature_boxes { padding-top: 0 }
+
+/* Remove margin from feature boxes */
+.ca-menu { margin-top: 0; margin-bottom: 0 }
+
+/* Fix line-height for feature boxes */
+.ca-sub { line-height: 1 }
+
+/* Navigation bar item on right */
+.navright {
+	position: absolute;
+	right:10px;
+}
+
+section#CookielawBanner {
+    position: fixed;
+    bottom: 0px;
+    width: 100%;
+    z-index: 999;
+    background-color: #FEFCCB;
+    border: 1px solid #E5DB55;
+    color: #32383E;
+    padding: 4px 4px 0px 4px;
+    text-align: center;
+}
+
+.news_banner {
+	padding: 12px 0px;
+	text-align: center;
+	font-size: 12px;
+}
+.news_banner a {
+    color: #31373D;
+}
+
+.share-buttons {
+    padding: 15px 0px 0px 0px;
+}
+
+#banner-container li {
+    color: #31373D;
+    padding: 5px 0 5px 24px;
+    background: 0px 3px no-repeat url('../images/logo-bullet.png');
+}
+
+#banner-container ul {
+    padding-bottom: 22px;
+}
+
+a.classic-link {
+    color: blue;
+    text-decoration: underline;
+}
+
+div.num-public-users {
+    color: #31373D;
+}
+
+/* Privacy policy changes */
+.policy-addition {
+    background-color: #99ff84;
+}
+
+.policy-removal {
+    text-decoration: line-through;
+    color: red;
+}
+
+.currencies {
+    margin-right: 10px;
+    text-align: right;
+}
